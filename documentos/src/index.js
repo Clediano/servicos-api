@@ -9,7 +9,7 @@ require('dotenv').config();
 
 const app = express();
 
-app.use((req, res, next) => auth(req, res, next));
+app.use(auth);
 app.use(helmet());
 app.use(morgan('tiny'));
 app.use(bodyParser.urlencoded({
