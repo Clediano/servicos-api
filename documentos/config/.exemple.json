@@ -1,0 +1,19 @@
+{
+    "Blockcypher": {
+        "token": "",
+        "apiUrl": ""
+    },
+    "Wallet": {
+        "privateKey": "",
+        "publicKey": "",
+        "wif": "",
+        "address": ""
+    },
+    "Database": {
+        "host": "",
+        "user": "",
+        "pass": ""
+    },
+    "totalFreeSatoshi": 0,
+    "authSecret": ""
+}

@@ -1,0 +1,14 @@
+{
+    "Database": {
+        "host": "",
+        "user": "",
+        "pass": ""
+    },
+    "authSecret": "",
+    "MailerConfig": {
+        "host": "",
+        "user": "",
+        "pass": "",
+        "port": ""
+    }
+}

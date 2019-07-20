@@ -5,8 +5,6 @@ const helmet = require('helmet');
 const cors = require('cors');
 const auth = require('./app/middlewares/auth');
 
-require('dotenv').config();
-
 const app = express();
 
 app.use(auth);

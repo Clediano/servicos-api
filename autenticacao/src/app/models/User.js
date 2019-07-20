@@ -49,8 +49,4 @@ User.init({
     }
 );
 
-/*User.addHook('beforeCreate', async user => {
-    user.password = await bcrypt.hash(user.getDataValue('password'), 10);
-});*/
-
 module.exports = User;
