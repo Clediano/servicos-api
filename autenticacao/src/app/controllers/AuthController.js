@@ -4,11 +4,12 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const mailer = require('../../modules/mailer');
 const User = require('../models/User');
-const config = require('config');
 const router = express.Router();
 
+const AUTH_SECRET = '0822df7867416c1cc7a5d5b2eea110df';
+
 function generateToken(params = {}) {
-    return jwt.sign(params, config.get('authSecret'), {
+    return jwt.sign(params, AUTH_SECRET, {
         expiresIn: 18000
     })
 }

@@ -1,14 +1,13 @@
 const Sequelize = require('sequelize');
-const config = require('config');
 
 function connect() {
 
-    const host = config.get('Database.host');
-    const user = config.get('Database.user');
-    const pass = config.get('Database.pass');
+    const DB_HOST = 'localhost';
+    const DB_USER = 'postgres';
+    const DB_PASS = 'postgres';
 
-    const sequelize = new Sequelize('database', user, pass, {
-        host: host,
+    const sequelize = new Sequelize('database', DB_USER, DB_PASS, {
+        host: DB_HOST,
         dialect: 'postgres'
     });
 

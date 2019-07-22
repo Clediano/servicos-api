@@ -1,7 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-const AUTH_SECRET = '0822df7867416c1cc7a5d5b2eea110df';
-
 module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -18,7 +16,7 @@ module.exports = (req, res, next) => {
     if(!/^Bearer$/i.test(scheme))
         return res.status(401).send({ error: 'Token de authenticação inválido.'});
 
-    jwt.verify(token, AUTH_SECRET, (err, decoded) => {
+    jwt.verify(token, '0822df7867416c1cc7a5d5b2eea110df', (err, decoded) => {
         if(err) return res.status(401).send({ error: 'Token de authenticação inválido.' });
 
         req.userId = decoded.id;
