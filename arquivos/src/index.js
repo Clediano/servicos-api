@@ -5,10 +5,9 @@ const cors = require('cors');
 const auth = require('./middlewares/auth');
 const helmet = require('helmet');
 const app = express();
+const { databaseConnection } = require('../config/config.js');
 
-mongoose.connect('mongodb+srv://clediano:clediano@cluster0-1uusa.mongodb.net/test?retryWrites=true&w=majority', {
-    useNewUrlParser: true
-});
+mongoose.connect(databaseConnection, { useNewUrlParser: true });
 
 app.use(auth);
 app.use(helmet());
