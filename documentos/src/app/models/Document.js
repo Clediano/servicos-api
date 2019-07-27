@@ -31,6 +31,7 @@ Document.init({
         modelName: 'document'
     }
 );
+
 Document.belongsTo(Transaction, { foreignKey: 'transaction_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 module.exports = Document;

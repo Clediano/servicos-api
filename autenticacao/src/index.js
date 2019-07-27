@@ -6,6 +6,9 @@ const cors = require('cors');
 
 const app = express();
 
+require('./app/models/User').sync({ force: true });
+require('./app/models/Wallet').sync({ force: true });
+
 app.use(helmet());
 app.use(morgan('tiny'));
 app.use(bodyParser.urlencoded({

@@ -2,41 +2,39 @@ const Sequelize = require('sequelize');
 const db = require('../../database');
 const bcrypt = require('bcryptjs');
 const uuid = require('uuid/v4');
+const User = require('./User');
 const sequelize = db.connect();
 
-class User extends Sequelize.Model { };
+class Wallet extends Sequelize.Model { };
 
-User.init({
+Wallet.init({
     id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: uuid()
     },
-    name: {
+    publicKey: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    email: {
+    privateKey: {
         type: Sequelize.STRING,
         unique: true,
-        allowNull: false,
-        set(email) {
-            this.setDataValue('email', email.toString().toLowerCase());
-        }
+        allowNull: false
     },
-    password: {
+    wif: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
     },
-    oidPhoto: Sequelize.STRING,
-    passwordResetToken: Sequelize.STRING,
-    passwordResetExpires: Sequelize.DATE,
-
+    address: {
+        type: Sequelize.STRING,
+        allowNull: false
+    }
 },
     {
         sequelize,
-        modelName: 'user',
+        modelName: 'wallet',
         hooks: {
             beforeCreate: async user => {
                 user.password = await bcrypt.hash(user.getDataValue('password'), 10);
@@ -44,7 +42,8 @@ User.init({
             beforeUpdate: async user => {
                 user.password = await bcrypt.hash(user.getDataValue('password'), 10);
             },
-        }
+        },
     }
 );
-module.exports = User;
+Wallet.hasOne(User);
+module.exports = Wallet;
