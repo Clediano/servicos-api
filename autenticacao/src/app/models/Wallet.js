@@ -45,5 +45,4 @@ Wallet.init({
         },
     }
 );
-Wallet.hasOne(User);
 module.exports = Wallet;

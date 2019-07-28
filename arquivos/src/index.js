@@ -5,7 +5,7 @@ const cors = require('cors');
 const auth = require('./middlewares/auth');
 const helmet = require('helmet');
 const app = express();
-const { databaseConnection } = require('../config/config.js');
+const databaseConnection = require('../config/config.js').databaseConnection;
 
 mongoose.connect(databaseConnection, { useNewUrlParser: true });
 

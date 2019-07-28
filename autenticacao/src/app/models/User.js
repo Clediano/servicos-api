@@ -3,6 +3,7 @@ const db = require('../../database');
 const bcrypt = require('bcryptjs');
 const uuid = require('uuid/v4');
 const sequelize = db.connect();
+const Wallet = require('./Wallet');
 
 class User extends Sequelize.Model { };
 
@@ -28,6 +29,14 @@ User.init({
     password: {
         type: Sequelize.STRING,
         allowNull: false,
+    },
+    walletId: {
+        type: Sequelize.UUID,
+        references: {
+            model: Wallet,
+            key: 'id',
+            deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
     },
     oidPhoto: Sequelize.STRING,
     passwordResetToken: Sequelize.STRING,
