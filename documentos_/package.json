@@ -1,7 +1,7 @@
 {
   "name": "documentos",
   "version": "1.0.0",
-  "description": "",
+  "description": "API para registrar documentos na rede Blockchain",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,24 +10,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "blockchain-anchor": "^2.4.0",
     "body-parser": "^1.19.0",
+    "config": "^3.2.1",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
+    "eccrypto": "^1.1.1",
     "express": "^4.17.1",
-    "helmet": "^3.20.0",
+    "fs": "0.0.1-security",
+    "helmet": "^3.18.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
-    "nodemailer": "^6.3.0",
-    "nodemailer-smtp-transport": "^2.7.4",
-    "pg": "^7.12.0",
+    "pg": "^7.11.0",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^5.11.0",
-    "sequelize-cli": "^5.5.0",
-    "socket.io": "^2.2.0",
+    "sequelize": "^5.10.1",
     "uuid": "^3.3.2"
-  },
-  "devDependencies": {
-    "nodemon": "^1.19.1"
   }
 }

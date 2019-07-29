@@ -1,13 +1,22 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan')
 const helmet = require('helmet');
-const cors = require('cors');
-const auth = require('./app/middlewares/auth');
+
+require('dotenv/config');
 
 const app = express();
 
-app.use(auth);
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+app.use((req, res, next) => {
+    req.io = io;
+
+    next();
+});
+console.log(process.env)
 app.use(helmet());
 app.use(morgan('tiny'));
 app.use(bodyParser.urlencoded({
@@ -16,8 +25,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(cors());
 
-require('./app/controllers')(app);
+require('./api')(app);
 
-app.listen(3001, () => {
-    console.log('Documentos rodando na porta 3001!');
+server.listen(3333, () => {
+    console.log('Serviço iniciado com sucesso! Porta:', process.env.PORT)
 });
