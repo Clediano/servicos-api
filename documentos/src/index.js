@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 
     next();
 });
-console.log(process.env)
+console.log(process.env.NAME)
 app.use(helmet());
 app.use(morgan('tiny'));
 app.use(bodyParser.urlencoded({

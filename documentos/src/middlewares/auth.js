@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const config = require('../config/secret');
 
-const AUTH_SECRET = '0822df7867416c1cc7a5d5b2eea110df';
+const AUTH_SECRET = config.AUTH_SECRET;
 
 module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;

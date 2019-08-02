@@ -1,37 +1,35 @@
+const db = require('../../database/models');
 // const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const config = require('../../config/secret');
 // const crypto = require('crypto');
 // const mailer = require('../../modules/mailer');
+var Organization = db.organization;
 
-const { sequelize } = require('../../database/models');
+const AUTH_SECRET = config.AUTH_SECRET;
 
-const AUTH_SECRET = process.env.AUTH_SECRET;
+async function register(req, res) {
 
-function register(req, res) {
+    const { name, email, password } = req.body;
 
-    console.log(req.body)
-    console.log(AUTH_SECRET)
-    console.log(sequelize)
-    
-    // const { name, email, password } = req.body;
-    // try {
-    //     const [organization, created] = await User.findOrCreate({ where: { email }, defaults: { name, email, password } })
+    try {
+        const [organization, created] = await Organization.findOrCreate({ where: { email }, defaults: { name, email, password } });
 
-    //     if (!created) {
-    //         res.status(400).send({ error: 'Este e-mail já está sendo usado.' });
-    //     }
+        if (!created) {
+            res.status(400).send({ error: 'Este e-mail já está sendo usado.' });
+        }
 
-    //     organization.password = undefined;
+        organization.password = undefined;
 
-    //     return res.send({
-    //         organization,
-    //         token: generateToken({ id: organization.id })
-    //     });
+        return res.send({
+            organization,
+            token: generateToken({ id: organization.id })
+        });
 
-    // } catch (err) {
-    //     return res.status(400).send({ error: 'Ocorreu um erro ao se registrar.' })
-    // }
-    
+    } catch (err) {
+        return res.status(400).send({ error: 'Ocorreu um erro ao se registrar.' })
+    }
+
 }
 
 function authenticate(req, res) {
