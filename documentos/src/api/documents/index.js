@@ -3,7 +3,7 @@ const router = express.Router();
 const api = require('../../config/axios');
 const fs = require('fs');
 const { createRawTransaction, countOfConfirmation, statisticOfTransaction } = require('../../repository/blockchain');
-const { createDataRegister, verifyExistTransaction } = require('../../repository/documents');
+const { createDataRegister, verifyExistTransaction, getExistTransaction } = require('../../repository/documents');
 
 /**
  * data: file
@@ -12,16 +12,23 @@ const { createDataRegister, verifyExistTransaction } = require('../../repository
 router.post('/create', async (req, res) => {
     const { hash } = req.body;
 
-    //if (await verifyExistTransaction(hash) === null) {
-      
-        //const {txId, error} = await createRawTransaction(hash, req, res);
+    if (await verifyExistTransaction(hash) === null) {
 
-        //if (error) res.status(400).send({ error });
+        const { txId, error } = await createRawTransaction(hash, req, res);
 
-        createDataRegister("551172b94d13f1c53c5ca43654aa6f6f2c31dcd66b5254d11cceafbf73725695", req, res);
-    //} else {
-        //res.status(404).send({ error: 'Este documento já foi registrado!' });
-    //}
+        if (error) res.status(400).send({ error });
+
+        createDataRegister(txId, req, res);
+    } else {
+        const { hash: transactionId } = await getExistTransaction(hash);
+
+        const { txStats } = await statisticOfTransaction(transactionId);
+
+        res.status(404).send({
+            error: 'Este documento já foi registrado!',
+            transaction: txStats
+        });
+    }
 });
 
 router.get('/confirmation', async (req, res) => {

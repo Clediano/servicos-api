@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     transactionId: DataTypes.STRING,
     height: DataTypes.INTEGER,
     hash: DataTypes.STRING,
-    opReturn: DataTypes.STRING,
+    opreturn: DataTypes.STRING,
     confirmation: DataTypes.INTEGER,
     size: DataTypes.INTEGER,
     confirmed: DataTypes.BOOLEAN,

@@ -16,7 +16,7 @@ module.exports = {
       hash: {
         type: Sequelize.STRING
       },
-      opReturn: {
+      opreturn: {
         type: Sequelize.STRING
       },
       confirmation: {

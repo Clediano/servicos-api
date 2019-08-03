@@ -17,6 +17,19 @@ async function verifyExistTransaction(hash) {
     return null;
 }
 
+async function getExistTransaction(hash) {
+    const { list, error } = await getAllTransactions();
+
+    if (error) return { error: 'Não foi possível buscar as transações da carteira.' }
+
+    const listOfTransactionWithSameHash = filterTransactionByHash(list, hash);
+
+    if (listOfTransactionWithSameHash.length > 0) {
+        return listOfTransactionWithSameHash[0];
+    }
+    return null;
+}
+
 async function createDataRegister(blockTransactionId, req, res) {
 
     const { organization, hash } = req.body;
@@ -42,7 +55,7 @@ async function createDataRegister(blockTransactionId, req, res) {
             res.sendStatus(400).send({ error: 'Não foi possível localizar a transação: ' + txId });
 
         const transaction = await Transaction.create({
-            transactionId: txId,
+            transactionId: txStats.id,
             height: txStats.blockHeight,
             hash: txStats.blockHash,
             confirmation: txStats.confirmations,
@@ -53,7 +66,7 @@ async function createDataRegister(blockTransactionId, req, res) {
         });
 
         const transactionWithDocument = await Transaction.findOne({
-            where: { id: transaction.id }, include: 'documentId'
+            where: { id: transaction.id }
         });
 
         return res.status(201).json({
@@ -66,5 +79,6 @@ async function createDataRegister(blockTransactionId, req, res) {
 
 module.exports = {
     createDataRegister,
-    verifyExistTransaction
+    verifyExistTransaction,
+    getExistTransaction
 };
