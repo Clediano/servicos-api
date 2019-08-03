@@ -2,6 +2,7 @@ module.exports = {
     NAME: 'Secure Share',
     PORT: '3333',
     AUTH_SECRET: '0822df7867416c1cc7a5d5b2eea110df',
+    AUTH_BASE_URL: 'http://localhost:3002',
     DB_NAME: 'database',
     DB_USER: 'postgres',
     DB_PASS: 'postgres',
