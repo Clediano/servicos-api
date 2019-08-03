@@ -17,7 +17,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       opReturn: {
-        type: DataTypes.STRING
+        type: Sequelize.STRING
       },
       confirmation: {
         type: Sequelize.INTEGER
