@@ -4,9 +4,8 @@ module.exports = {
     return queryInterface.createTable('intersteds', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       publicKey: {
         type: Sequelize.STRING

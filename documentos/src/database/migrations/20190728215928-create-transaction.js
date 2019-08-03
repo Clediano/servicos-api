@@ -4,9 +4,8 @@ module.exports = {
     return queryInterface.createTable('transactions', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       transactionId: {
         type: Sequelize.STRING
@@ -16,6 +15,9 @@ module.exports = {
       },
       hash: {
         type: Sequelize.STRING
+      },
+      opReturn: {
+        type: DataTypes.STRING
       },
       confirmation: {
         type: Sequelize.INTEGER

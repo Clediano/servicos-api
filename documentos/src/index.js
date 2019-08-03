@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 
     next();
 });
-console.log(process.env.NAME)
+
 app.use(helmet());
 app.use(morgan('tiny'));
 app.use(bodyParser.urlencoded({
@@ -28,5 +28,5 @@ app.use(cors());
 require('./api')(app);
 
 server.listen(3333, () => {
-    console.log('Serviço iniciado com sucesso! Porta:', process.env.PORT)
+    console.log('Serviço iniciado com sucesso! Porta: 3333')
 });

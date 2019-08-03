@@ -1,9 +1,13 @@
 'use strict';
+
+const uuid = require('uuid/v4');
+
 module.exports = (sequelize, DataTypes) => {
   const transaction = sequelize.define('transaction', {
     transactionId: DataTypes.STRING,
     height: DataTypes.INTEGER,
     hash: DataTypes.STRING,
+    opReturn: DataTypes.STRING,
     confirmation: DataTypes.INTEGER,
     size: DataTypes.INTEGER,
     confirmed: DataTypes.BOOLEAN,
@@ -15,8 +19,16 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     }
-  }, {});
-  transaction.associate = function(models) {
+  },
+    {
+      hooks: {
+        beforeCreate: async transaction => {
+          transaction.id = uuid();
+        }
+      }
+    }
+  );
+  transaction.associate = function (models) {
     // associations can be defined here
   };
   return transaction;

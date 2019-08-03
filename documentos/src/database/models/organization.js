@@ -1,6 +1,7 @@
 'use strict';
 
 const bcrypt = require('bcryptjs');
+const uuid = require('uuid/v4');
 
 module.exports = (sequelize, DataTypes) => {
   const Organization = sequelize.define('organization', {
@@ -26,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
       hooks: {
         beforeCreate: async organization => {
+          organization.id = uuid();
           organization.password = await bcrypt.hash(organization.getDataValue('password'), 10);
         },
         beforeUpdate: async organization => {

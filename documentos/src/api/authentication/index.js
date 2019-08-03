@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { register, authenticate, forgotPassword } = require('../../repository/authentication');
+const { register, authenticate, forgotPassword, resetPassword } = require('../../repository/authentication');
 
 router.post('/register', async (req, res) => {
     register(req, res);

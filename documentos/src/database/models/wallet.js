@@ -1,4 +1,7 @@
 'use strict';
+
+const uuid = require('uuid/v4');
+
 module.exports = (sequelize, DataTypes) => {
   const Wallet = sequelize.define('wallet', {
     publicKey: DataTypes.STRING,
@@ -13,7 +16,15 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-  }, {});
+  },
+    {
+      hooks: {
+        beforeCreate: async wallet => {
+          wallet.id = uuid();
+        }
+      }
+    }
+  );
   Wallet.associate = function (models) {
     // associations can be defined here
   };

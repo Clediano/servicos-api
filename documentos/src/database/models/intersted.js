@@ -1,4 +1,7 @@
 'use strict';
+
+const uuid = require('uuid/v4');
+
 module.exports = (sequelize, DataTypes) => {
   const intersted = sequelize.define('intersted', {
     publicKey: DataTypes.STRING,
@@ -10,8 +13,16 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-  }, {});
-  intersted.associate = function(models) {
+  },
+    {
+      hooks: {
+        beforeCreate: async intersted => {
+          intersted.id = uuid();
+        }
+      }
+    }
+  );
+  intersted.associate = function (models) {
     // associations can be defined here
   };
   return intersted;
