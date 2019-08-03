@@ -27,7 +27,7 @@ async function createDataRegister(blockTransactionId, req, res) {
 
         if (!data.id)
             res.status(400).send({ error: 'Não foi possível buscar o documento com hash: ' + hash })
-console.log(organization)
+
         const document = await Document.create({
             oidArchive: data.id,
             organizationId: organization
