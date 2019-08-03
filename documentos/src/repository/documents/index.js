@@ -1,16 +1,30 @@
 const Document = require('../../database/models').document;
 const Transaction = require('../../database/models').transaction;
-const { statisticOfTransaction } = require('../../repository/blockchain');
-const { AUTH_SECRET } = require('../../config/secret');
+const api = require('../../config/axios');
+const { getAllTransactions } = require('../blockchain');
+const { filterTransactionByHash } = require('./functions');
 
-async function createDataRegister(blockTransaction, req, res) {
+async function verifyExistTransaction(hash){
+    const { list, error } = await getAllTransactions();
 
-    const { organization } = req.body;
+    if(error) return { error: 'Não foi possível buscar as transações da carteira.' }
+
+    filterTransactionByHash(list, hash);
+}
+
+async function createDataRegister(blockTransactionId, req, res) {
+
+    const { organization, hash } = req.body;
 
     try {
 
-        const document = await Document.create({
-            oidArchive: blockTransaction.oidFile,
+        //const { _id } = await api.get(`file/findByHash/${hash}`);
+
+        //if(!_id) res.sendStatus(400).send({ error: 'Não foi possível buscar o arquivo com hash: ' + hash })
+
+
+       /* const document = await Document.create({
+            oidArchive: _id,
             organizationId: organization
         });
 
@@ -37,37 +51,13 @@ async function createDataRegister(blockTransaction, req, res) {
 
         return res.json({
             document: transactionWithDocument
-        });
+        });*/
     } catch (error) {
         return res.json({ error: error.message });
     }
 }
 
-async function authenticate(req, res) {
-    const { } = req.body;
-
-}
-
-async function forgotPassword(req, res) {
-    const { } = req.body;
-
-    try {
-
-    } catch (err) {
-        res.status(400).send({ error: 'Erro ao recuperar a senha, tente novamente mais tarde.' });
-    }
-}
-
-async function resetPassword(req, res) {
-    const { } = req.body;
-
-    try {
-
-    } catch (err) {
-        res.status(400).send({ error: 'Erro ao resetar a senha, tente novamente mais tarde.' });
-    }
-}
-
 module.exports = {
-    createDataRegister
+    createDataRegister,
+    verifyExistTransaction
 };

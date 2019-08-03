@@ -1,22 +1,25 @@
 const express = require('express');
 const router = express.Router();
+const api = require('../../config/axios');
 const fs = require('fs');
 const { createRawTransaction, countOfConfirmation, statisticOfTransaction } = require('../../repository/blockchain');
-const { createDataRegister } = require('../../repository/documents');
+const { createDataRegister, verifyExistTransaction } = require('../../repository/documents');
 
 /**
  * data: file
  * organization: organizationId
  */
 router.post('/create', async (req, res) => {
-   
-    console.log(req.file)
-    
-    //const transaction = await createRawTransaction(req, res);
+       const { hash } = req.body;
+    //const { data } = await api.get(`file/findByHash/${hash}`);
 
-    //if (transaction.error) res.sendStatus(400).send({ error });
+    await verifyExistTransaction(hash);
 
-    //createDataRegister(transaction, req, res);
+    //const {txId, error} = await createRawTransaction(data, req, res);
+
+    //if (error) res.sendStatus(400).send({ error });
+
+    //createDataRegister(txId, req, res);
 });
 
 router.get('/confirmation', async (req, res) => {

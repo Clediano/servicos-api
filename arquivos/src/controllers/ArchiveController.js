@@ -42,6 +42,20 @@ router.get('/:id', async (req, res) => {
     return res.status(404).json({ erro: 'Nenhum arquivo com este ID foi encontrado.' });
 });
 
+router.get('/findByHash/:hash', async (req, res) => {
+    const { hash } = req.params;
+
+    const arquivo = await Archive.findOne({ hash });
+    
+    if (arquivo)
+        return res.send({
+            id: arquivo._id,
+            hash: arquivo.hash
+        });
+
+    return res.status(404).json({ erro: 'Nenhum arquivo com este ID foi encontrado.' });
+});
+
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
 

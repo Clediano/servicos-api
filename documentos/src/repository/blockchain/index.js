@@ -1,34 +1,23 @@
 const { anchor } = require('../../config/anchor');
-const api = require('../../config/axios');
-const { WALLET_PRIVATE_KEY, TOTAL_FREE_SATOSHI } = require('../../config/secret');
+const axios = require('axios').default;
+const { WALLET_ADDRESS, WALLET_WIF, TOTAL_FREE_SATOSHI, BLOCKCYPHER_API_URL } = require('../../config/secret');
 
-async function createRawTransaction(req, res) {
+async function createRawTransaction(file, req, res) {
 
-    const { data } = req.body;
-
-    let hexData = new Buffer.from(data).toString('hex');
+    let hexData = new Buffer.from(file.hash).toString('hex');
     let result;
 
     try {
-        const txId = await anchor.btcOpReturnAsync(WALLET_PRIVATE_KEY, hexData, TOTAL_FREE_SATOSHI)
 
-        if (txId) {
-            //salvar arquivo no mongo (result -> _id, hash)
-            const file = await api.post('file', hexData);
-
-            if (!file._id) res.sendStatus(400).send({ error: 'Não foi possível salvar o documento no banco de dados.' })
-            
-        }
+        const data = await anchor.btcOpReturnAsync(WALLET_WIF, hexData, TOTAL_FREE_SATOSHI)
 
         result = {
-            txId,
-            oidFile: file._id,
+            txId: data.txId,
             error: null
         };
     } catch (error) {
         result = {
             txId: null,
-            oidFile: null,
             error: error.message
         };
     }
@@ -116,10 +105,30 @@ async function confirmRawTransaction(transactionId, expectedValue) {
     return result;
 }
 
+async function getAllTransactions() {
+
+    let result;
+
+    try {
+        const listOfTransaction = await axios.get(`${BLOCKCYPHER_API_URL}/addrs/${WALLET_ADDRESS}/full`);
+        result = {
+            list: listOfTransaction,
+            error: null
+        };
+    } catch (error) {
+        result = {
+            list: null,
+            error: error.message
+        };
+    }
+    return result;
+}
+
 module.exports = {
     confirmRawTransaction,
     statisticOfTransaction,
     countOfConfirmation,
     splitOutput,
-    createRawTransaction
+    createRawTransaction,
+    getAllTransactions
 }
