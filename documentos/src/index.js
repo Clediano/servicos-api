@@ -3,8 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan')
 const helmet = require('helmet');
-
-require('dotenv/config');
+const { PORT } = require('./config/secret');
 
 const app = express();
 
@@ -27,6 +26,6 @@ app.use(cors());
 
 require('./api')(app);
 
-server.listen(3333, () => {
-    console.log('Serviço iniciado com sucesso! Porta: 3333')
+server.listen(PORT, () => {
+    console.log('Serviço iniciado com sucesso! Porta: ' + PORT)
 });
