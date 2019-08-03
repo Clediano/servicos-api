@@ -1,15 +1,20 @@
 const Document = require('../../database/models').document;
 const Transaction = require('../../database/models').transaction;
 const api = require('../../config/axios');
-const { getAllTransactions } = require('../blockchain');
+const { getAllTransactions, statisticOfTransaction } = require('../blockchain');
 const { filterTransactionByHash } = require('./functions');
 
-async function verifyExistTransaction(hash){
+async function verifyExistTransaction(hash) {
     const { list, error } = await getAllTransactions();
 
-    if(error) return { error: 'Não foi possível buscar as transações da carteira.' }
+    if (error) return { error: 'Não foi possível buscar as transações da carteira.' }
 
-    filterTransactionByHash(list, hash);
+    const listOfTransactionWithSameHash = filterTransactionByHash(list, hash);
+
+    if (listOfTransactionWithSameHash.length > 0) {
+        return listOfTransactionWithSameHash;
+    }
+    return null;
 }
 
 async function createDataRegister(blockTransactionId, req, res) {
@@ -18,21 +23,23 @@ async function createDataRegister(blockTransactionId, req, res) {
 
     try {
 
-        //const { _id } = await api.get(`file/findByHash/${hash}`);
+        const { data } = await api.get(`file/findByHash/${hash}`);
 
-        //if(!_id) res.sendStatus(400).send({ error: 'Não foi possível buscar o arquivo com hash: ' + hash })
-
-
-       /* const document = await Document.create({
-            oidArchive: _id,
+        if (!data.id)
+            res.status(400).send({ error: 'Não foi possível buscar o documento com hash: ' + hash })
+console.log(organization)
+        const document = await Document.create({
+            oidArchive: data.id,
             organizationId: organization
         });
 
-        if (!document.id) res.sendStatus(400).send({ error: 'Não foi possível salvar o documento no banco de dados.' })
+        if (!document.id)
+            res.status(400).send({ error: 'Não foi possível salvar o documento no banco de dados.' })
 
-        const { txStats, error } = statisticOfTransaction(blockTransaction.txId);
+        const { txStats, error } = await statisticOfTransaction(blockTransactionId);
 
-        if (error) res.sendStatus(400).send({ error: 'Não foi possível localizar a transação: ' + txId });
+        if (error)
+            res.sendStatus(400).send({ error: 'Não foi possível localizar a transação: ' + txId });
 
         const transaction = await Transaction.create({
             transactionId: txId,
@@ -49,9 +56,9 @@ async function createDataRegister(blockTransactionId, req, res) {
             where: { id: transaction.id }, include: 'documentId'
         });
 
-        return res.json({
+        return res.status(201).json({
             document: transactionWithDocument
-        });*/
+        });
     } catch (error) {
         return res.json({ error: error.message });
     }

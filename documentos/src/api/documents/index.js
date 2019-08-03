@@ -10,16 +10,18 @@ const { createDataRegister, verifyExistTransaction } = require('../../repository
  * organization: organizationId
  */
 router.post('/create', async (req, res) => {
-       const { hash } = req.body;
-    //const { data } = await api.get(`file/findByHash/${hash}`);
+    const { hash } = req.body;
 
-    await verifyExistTransaction(hash);
+    //if (await verifyExistTransaction(hash) === null) {
+      
+        //const {txId, error} = await createRawTransaction(hash, req, res);
 
-    //const {txId, error} = await createRawTransaction(data, req, res);
+        //if (error) res.status(400).send({ error });
 
-    //if (error) res.sendStatus(400).send({ error });
-
-    //createDataRegister(txId, req, res);
+        createDataRegister("551172b94d13f1c53c5ca43654aa6f6f2c31dcd66b5254d11cceafbf73725695", req, res);
+    //} else {
+        //res.status(404).send({ error: 'Este documento já foi registrado!' });
+    //}
 });
 
 router.get('/confirmation', async (req, res) => {

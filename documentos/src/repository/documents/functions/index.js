@@ -1,9 +1,10 @@
 
-async function filterTransactionByHash({ data }, hash) {
+function filterTransactionByHash({ data }, hash) {
     if (data) {
-        data.txs.filter(({ outputs }) => {
-            console.log(outputs)
+        const list = data.txs.filter(element => {
+            return element.outputs[0].data_string === hash;
         });
+        return list;
     }
 }
 

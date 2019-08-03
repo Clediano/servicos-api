@@ -2,9 +2,9 @@ const { anchor } = require('../../config/anchor');
 const axios = require('axios').default;
 const { WALLET_ADDRESS, WALLET_WIF, TOTAL_FREE_SATOSHI, BLOCKCYPHER_API_URL } = require('../../config/secret');
 
-async function createRawTransaction(file, req, res) {
+async function createRawTransaction(hash, req, res) {
 
-    let hexData = new Buffer.from(file.hash).toString('hex');
+    let hexData = new Buffer.from(hash).toString('hex');
     let result;
 
     try {
