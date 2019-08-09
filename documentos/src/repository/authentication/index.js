@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const descriptografarTransferencia = require('../../cryptography');
 
 const Organization = require('../../database/models').organization;
 const mailer = require('../../modules/mailer');
@@ -30,7 +31,15 @@ async function register(req, res) {
 }
 
 async function authenticate(req, res) {
-    const { email, password } = req.body;
+
+    const { email: cryptoEmail, password: cryptoPassword } = req.body;
+
+    const email = descriptografarTransferencia(cryptoEmail);
+    const password = descriptografarTransferencia(cryptoPassword)
+    
+    console.log(cryptoEmail);
+    console.log(cryptoPassword);
+    
 
     const organization = await Organization.findOne({ where: { email } });
 
