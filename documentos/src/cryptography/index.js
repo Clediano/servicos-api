@@ -1,55 +1,28 @@
 const crypto = require('crypto');
 
-const KEYSIZE = 128 / 32;
-const ITERATIONCOUNT = 1000;
-const CHAVEPADRAO = '1t713d3844595f233c293f7f65'
+const ENCRYPTION_KEY = '$1LWXU0/Q1$IvAyMkyR1sN2312ZW.mAW';
+const IV_LENGTH = 16;
 
-function criptografarTransferencia(texto, chave = CHAVEPADRAO) {
-    var iv = crypto.lib.WordArray.random(128 / 8).toString(crypto.enc.Hex);
-    var salt = crypto.lib.WordArray.random(128 / 8).toString(crypto.enc.Hex);
+function criptografar(text) {
+    let iv = crypto.randomBytes(IV_LENGTH);
+    let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+    let encrypted = cipher.update(text);
 
-    var key = generateKey(salt, chave);
-    var encrypted = crypto.AES.encrypt(
-        texto,
-        key,
-        { iv: crypto.enc.Hex.parse(iv) }
-    );
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
 
-    return iv + "::" + salt + "::" + encrypted.ciphertext.toString(crypto.enc.Base64);
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
 }
 
-function descriptografarTransferencia(textoBruto, chave = CHAVEPADRAO) {
+function descriptografar(text) {
+    let textParts = text.split(':');
+    let iv = Buffer.from(textParts.shift(), 'hex');
+    let encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+    let decrypted = decipher.update(encryptedText);
 
-    if (textoBruto.split("::").length === 3) {
-        var iv = textoBruto.split("::")[0];
-        var salt = textoBruto.split("::")[1];
-        var texto = textoBruto.split("::")[2];
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
 
-        var key = generateKey(salt, chave);
-        var cipherParams = crypto.lib.CipherParams.create({
-            ciphertext: crypto.enc.Base64.parse(texto)
-        });
-        var decrypted = crypto.AES.decrypt(
-            cipherParams,
-            key,
-            { iv: crypto.enc.Hex.parse(iv) });
-        return decrypted.toString(crypto.enc.Utf8);
-
-    } else {
-        return textoBruto;
-    }
+    return decrypted.toString();
 }
 
-
-function generateKey(salt, passPhrase) {
-    var key = crypto.PBKDF2(
-        passPhrase,
-        crypto.enc.Hex.parse(salt),
-        { KEYSIZE: KEYSIZE, iterations: ITERATIONCOUNT });
-    return key;
-}
-
-module.exports = {
-    descriptografarTransferencia,
-    criptografarTransferencia
-}
+module.exports = { descriptografar, criptografar };

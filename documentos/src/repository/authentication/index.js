@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const descriptografarTransferencia = require('../../cryptography');
+const { descriptografar, criptografar } = require('../../cryptography');
 
 const Organization = require('../../database/models').organization;
 const mailer = require('../../modules/mailer');
@@ -32,14 +32,10 @@ async function register(req, res) {
 
 async function authenticate(req, res) {
 
-    const { email: cryptoEmail, password: cryptoPassword } = req.body;
+    const { email: emailCrypto, password: passCrypto } = req.body;
 
-    const email = descriptografarTransferencia(cryptoEmail);
-    const password = descriptografarTransferencia(cryptoPassword)
-    
-    console.log(cryptoEmail);
-    console.log(cryptoPassword);
-    
+    const email = descriptografar(emailCrypto);
+    const password = descriptografar(passCrypto)
 
     const organization = await Organization.findOne({ where: { email } });
 
@@ -60,14 +56,14 @@ async function forgotPassword(req, res) {
 
     try {
         const organization = await Organization.findOne({ where: { email } });
-        
+
         if (!organization) {
             return res.status(400).send({ error: 'Usuário não encontrado.' });
         }
 
         const token = crypto.randomBytes(20).toString('hex');
         const now = new Date();
-              now.setHours(now.getHours() + 1);
+        now.setHours(now.getHours() + 1);
 
         await Organization.update({
             passwordResetToken: token,
