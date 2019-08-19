@@ -1,3 +1,5 @@
+const cron = require('node-cron');
+const Transaction = require('../../../database/models').transaction;
 
 function filterTransactionByHash({ data }, hash) {
     if (data) {
@@ -8,6 +10,27 @@ function filterTransactionByHash({ data }, hash) {
     }
 }
 
+// -> '0 */1 * * *' : “At minute 0 past every hour.”.
+function updateTransactions() {
+    cron.schedule('* * * * *', () => {
+        console.log('rodei')
+
+        // const transactions = await Transaction.findAll({ where: { confirmed: false }, order: [['createdAt', 'ASC']] });
+
+        // transactions && transactions.map(async transaction => {
+
+        //     const numberOfConfirmations = await countOfConfirmation(transactions.transactionId);
+
+        //     if (numberOfConfirmations > 6) {
+        //         Transaction.update({ confirmations: numberOfConfirmations, confirmed: true }, { where: { id: transaction.id } });
+        //     } else {
+        //         Transaction.update({ confirmations: numberOfConfirmations }, { where: { id: transaction.id } });
+        //     }
+        // });
+    });
+}
+
 module.exports = {
-    filterTransactionByHash
+    filterTransactionByHash,
+    updateTransactions
 }

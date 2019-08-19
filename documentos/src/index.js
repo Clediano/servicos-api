@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan')
 const helmet = require('helmet');
+const { updateTransactions } = require('./repository/documents/functions');
 const { PORT } = require('./config/secret');
 
 const app = express();
@@ -25,6 +26,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 require('./api')(app);
+
+updateTransactions();
 
 server.listen(PORT, () => {
     console.log('Serviço iniciado com sucesso! Porta: ' + PORT)

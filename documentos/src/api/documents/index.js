@@ -3,11 +3,10 @@ const router = express.Router();
 const api = require('../../config/axios');
 const fs = require('fs');
 const { createRawTransaction, countOfConfirmation, statisticOfTransaction } = require('../../repository/blockchain');
-const { createDataRegister, verifyExistTransaction, getExistTransaction } = require('../../repository/documents');
+const { createDataRegister, verifyExistTransaction, getExistTransaction, findTransactionsByOrganization } = require('../../repository/documents');
 
 /**
- * data: file
- * organization: organizationId
+ * @param hash: file hash
  */
 router.post('/create', async (req, res) => {
     const { hash } = req.body;
@@ -31,12 +30,26 @@ router.post('/create', async (req, res) => {
     }
 });
 
+/**
+ * @param transactionId
+ */
 router.get('/confirmation', async (req, res) => {
     countOfConfirmation(req, res);
 });
 
+/**
+ * @param transactionId
+ */
 router.post('/statistic', async (req, res) => {
     statisticOfTransaction(req, res);
 });
+
+/**
+ * @param organizationId
+ */
+router.get('/find_transactions', async (req, res) => {
+    findTransactionsByOrganization(req, res);
+});
+
 
 module.exports = app => app.use('/doc', router);

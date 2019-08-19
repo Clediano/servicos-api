@@ -3,9 +3,10 @@ const Transaction = require('../../database/models').transaction;
 const api = require('../../config/axios');
 const { getAllTransactions, statisticOfTransaction } = require('../blockchain');
 const { filterTransactionByHash } = require('./functions');
+const { WALLET_ADDRESS } = require('../../config/secret');
 
 async function verifyExistTransaction(hash) {
-    const { list, error } = await getAllTransactions();
+    const { list, error } = await getAllTransactions(WALLET_ADDRESS);
 
     if (error) return { error: 'Não foi possível buscar as transações da carteira.' }
 
@@ -18,7 +19,7 @@ async function verifyExistTransaction(hash) {
 }
 
 async function getExistTransaction(hash) {
-    const { list, error } = await getAllTransactions();
+    const { list, error } = await getAllTransactions(WALLET_ADDRESS);
 
     if (error) return { error: 'Não foi possível buscar as transações da carteira.' }
 
@@ -30,16 +31,27 @@ async function getExistTransaction(hash) {
     return null;
 }
 
+async function findTransactionsByOrganization(req, res) {
+
+    const { organization } = req.body;
+
+    const documents = await Transaction.findAll({ where: { organizationid: organization }, order: [['createdAt', 'DESC']] });
+
+    if (documents) {
+        res.send(documents);
+    }
+    res.status(400).send({ error: "Ocorreu um erro ao buscar os documentos." });
+}
+
 async function createDataRegister(blockTransactionId, req, res) {
 
     const { organization, hash } = req.body;
 
     try {
 
-        const { data } = await api.get(`file/findByHash/${hash}`);
-
-        if (!data.id)
+        const data = await api.get(`file/findByHash/${hash}`).catch(() => {
             res.status(400).send({ error: 'Não foi possível buscar o documento com hash: ' + hash })
+        })
 
         const document = await Document.create({
             oidArchive: data.id,
@@ -73,6 +85,9 @@ async function createDataRegister(blockTransactionId, req, res) {
             document: transactionWithDocument
         });
     } catch (error) {
+        if (error.message.includes("connect ECONNREFUSED")) {
+            return res.json({ error: "Erro de conexão com o servidor. Por favor, tente novamente mais tarde." });
+        }
         return res.json({ error: error.message });
     }
 }
@@ -80,5 +95,6 @@ async function createDataRegister(blockTransactionId, req, res) {
 module.exports = {
     createDataRegister,
     verifyExistTransaction,
-    getExistTransaction
+    getExistTransaction,
+    findTransactionsByOrganization
 };

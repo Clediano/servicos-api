@@ -2,7 +2,7 @@ const { anchor } = require('../../config/anchor');
 const axios = require('axios').default;
 const { WALLET_ADDRESS, WALLET_WIF, TOTAL_FREE_SATOSHI, BLOCKCYPHER_API_URL } = require('../../config/secret');
 
-async function createRawTransaction(hash, req, res) {
+async function createRawTransaction(hash) {
 
     let hexData = new Buffer.from(hash).toString('hex');
     let result;
@@ -105,12 +105,12 @@ async function confirmRawTransaction(transactionId, expectedValue) {
     return result;
 }
 
-async function getAllTransactions() {
+async function getAllTransactions(walletAddress) {
 
     let result;
 
     try {
-        const listOfTransaction = await axios.get(`${BLOCKCYPHER_API_URL}/addrs/${WALLET_ADDRESS}/full`);
+        const listOfTransaction = await axios.get(`${BLOCKCYPHER_API_URL}/addrs/${walletAddress}/full`);
         result = {
             list: listOfTransaction,
             error: null

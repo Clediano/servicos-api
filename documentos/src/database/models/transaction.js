@@ -18,6 +18,14 @@ module.exports = (sequelize, DataTypes) => {
         model: 'documents',
         key: 'id'
       }
+    },
+    organizationid: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'organizations',
+        key: 'id'
+      }
     }
   },
     {

@@ -36,6 +36,14 @@ module.exports = {
           key: 'id'
         }
       },
+      organizationid: {
+        type: Sequelize.UUID,
+        allowNull: true,
+        references: {
+          model: 'organizations',
+          key: 'id'
+        }
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
