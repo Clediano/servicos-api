@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const Transaction = require('../../../database/models').transaction;
+const { countOfConfirmation } = require('../../blockchain');
 
 function filterTransactionByHash({ data }, hash) {
     if (data) {
@@ -11,26 +12,25 @@ function filterTransactionByHash({ data }, hash) {
 }
 
 // -> '0 */1 * * *' : “At minute 0 past every hour.”.
-function updateTransactions() {
-    cron.schedule('* * * * *', () => {
-        console.log('rodei')
 
-        // const transactions = await Transaction.findAll({ where: { confirmed: false }, order: [['createdAt', 'ASC']] });
+cron.schedule('* * * * *', async () => {
 
-        // transactions && transactions.map(async transaction => {
+    const transactions = await Transaction.findAll({ where: { confirmed: false }, order: [['createdAt', 'ASC']] });
 
-        //     const numberOfConfirmations = await countOfConfirmation(transactions.transactionId);
+    transactions && transactions.map(async transaction => {
 
-        //     if (numberOfConfirmations > 6) {
-        //         Transaction.update({ confirmations: numberOfConfirmations, confirmed: true }, { where: { id: transaction.id } });
-        //     } else {
-        //         Transaction.update({ confirmations: numberOfConfirmations }, { where: { id: transaction.id } });
-        //     }
-        // });
+        const numberOfConfirmations = await countOfConfirmation(transactions.transactionId);
+
+        if (numberOfConfirmations > 6) {
+            Transaction.update({ confirmations: numberOfConfirmations, confirmed: true }, { where: { id: transaction.id } });
+        } else {
+            Transaction.update({ confirmations: numberOfConfirmations }, { where: { id: transaction.id } });
+        }
     });
-}
+    console.log('rodei')
+});
+
 
 module.exports = {
-    filterTransactionByHash,
-    updateTransactions
+    filterTransactionByHash
 }

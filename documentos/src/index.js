@@ -27,8 +27,6 @@ app.use(cors());
 
 require('./api')(app);
 
-updateTransactions();
-
 server.listen(PORT, () => {
     console.log('Serviço iniciado com sucesso! Porta: ' + PORT)
 });

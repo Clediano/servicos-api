@@ -37,6 +37,10 @@ async function authenticate(req, res) {
     const email = descriptografar(emailCrypto);
     const password = descriptografar(passCrypto)
 
+    if (!email || !password) {
+        res.status(400).send({ error: 'Usuário ou senha inválido.' });
+    }
+
     const organization = await Organization.findOne({ where: { email } });
 
     if (!organization || !await bcrypt.compare(password, organization.password)) {
