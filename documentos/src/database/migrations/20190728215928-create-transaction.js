@@ -7,7 +7,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID
       },
-      transactionId: {
+      transactionid: {
         type: Sequelize.STRING
       },
       height: {
@@ -28,7 +28,7 @@ module.exports = {
       confirmed: {
         type: Sequelize.BOOLEAN
       },
-      documentId: {
+      documentid: {
         type: Sequelize.UUID,
         allowNull: true,
         references: {

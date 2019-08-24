@@ -4,14 +4,14 @@ const uuid = require('uuid/v4');
 
 module.exports = (sequelize, DataTypes) => {
   const transaction = sequelize.define('transaction', {
-    transactionId: DataTypes.STRING,
+    transactionid: DataTypes.STRING,
     height: DataTypes.INTEGER,
     hash: DataTypes.STRING,
     opreturn: DataTypes.STRING,
     confirmation: DataTypes.INTEGER,
     size: DataTypes.INTEGER,
     confirmed: DataTypes.BOOLEAN,
-    documentId: {
+    documentid: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {

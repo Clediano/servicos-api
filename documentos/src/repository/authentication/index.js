@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const { descriptografar, criptografar } = require('../../cryptography');
+const { descriptografar } = require('../../cryptography');
 
 const Organization = require('../../database/models').organization;
 const mailer = require('../../modules/mailer');

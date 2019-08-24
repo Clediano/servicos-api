@@ -4,11 +4,11 @@ const uuid = require('uuid/v4');
 
 module.exports = (sequelize, DataTypes) => {
   const Wallet = sequelize.define('wallet', {
-    publicKey: DataTypes.STRING,
-    privateKey: DataTypes.STRING,
+    publickey: DataTypes.STRING,
+    privatekey: DataTypes.STRING,
     wif: DataTypes.STRING,
     address: DataTypes.STRING,
-    organizationId: {
+    organizationid: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {

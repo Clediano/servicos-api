@@ -8,11 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID
       },
-      publicKey: {
+      publickey: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      privateKey: {
+      privatekey: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      organizationId: {
+      organizationid: {
         type: Sequelize.UUID,
         allowNull: true,
         references: {

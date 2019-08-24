@@ -8,10 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID
       },
-      oidArchive: {
+      oidarchive: {
         type: Sequelize.STRING
       },
-      organizationId: {
+      organizationid: {
         type: Sequelize.UUID,
         allowNull: true,
         references: {

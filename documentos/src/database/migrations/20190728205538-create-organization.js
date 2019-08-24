@@ -24,13 +24,13 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      oidPhoto: {
+      oidphoto: {
         type: Sequelize.STRING
       },
-      passwordResetToken: {
+      passwordresettoken: {
         type: Sequelize.STRING
       },
-      passwordResetExpired: {
+      passwordresetexpired: {
         type: Sequelize.DATE
       },
       createdAt: {

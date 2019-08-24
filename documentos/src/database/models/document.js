@@ -5,7 +5,7 @@ const uuid = require('uuid/v4');
 module.exports = (sequelize, DataTypes) => {
   const document = sequelize.define('document', {
     oidArchive: DataTypes.STRING,
-    organizationId: {
+    organizationid: {
       type: DataTypes.UUID,
       allowNull: true,
       references: {

@@ -7,10 +7,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID
       },
-      publicKey: {
+      publickey: {
         type: Sequelize.STRING
       },
-      organizationId: {
+      organizationid: {
         type: Sequelize.UUID,
         allowNull: true,
         references: {

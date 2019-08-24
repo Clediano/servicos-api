@@ -21,9 +21,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    oidPhoto: DataTypes.STRING,
-    passwordResetToken: DataTypes.STRING,
-    passwordResetExpired: DataTypes.DATE
+    oidphoto: DataTypes.STRING,
+    passwordresettoken: DataTypes.STRING,
+    passwordresetexpired: DataTypes.DATE
   }, {
       hooks: {
         beforeCreate: async organization => {
