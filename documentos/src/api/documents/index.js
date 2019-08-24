@@ -45,7 +45,7 @@ router.post('/statistic', async (req, res) => {
 });
 
 /**
- * @param organizationId
+ * @param organizationid
  */
 router.get('/find_transactions', async (req, res) => {
     findTransactionsByOrganization(req, res);

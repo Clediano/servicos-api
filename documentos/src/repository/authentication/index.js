@@ -70,8 +70,8 @@ async function forgotPassword(req, res) {
         now.setHours(now.getHours() + 1);
 
         await Organization.update({
-            passwordResetToken: token,
-            passwordResetExpires: now
+            passwordresettoken: token,
+            passwordresetexpires: now
         },
             {
                 where: { id: organization.id }
@@ -107,11 +107,11 @@ async function resetPassword(req, res) {
             return res.status(400).send({ error: 'Usuário não encontrado.' });
         }
 
-        if (token !== organization.passwordResetToken) {
+        if (token !== organization.passwordresettoken) {
             return res.status(400).send({ error: 'Token de recuperação de senha inválido. Verifique o token em sua caixa de entrada de e-mail.' });
         }
 
-        if (new Date() > organization.passwordResetExpires) {
+        if (new Date() > organization.passwordresetexpires) {
             return res.status(400).send({ error: 'Token expirou.' });
         }
 

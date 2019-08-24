@@ -27,7 +27,6 @@ cron.schedule('* * * * *', async () => {
             Transaction.update({ confirmations: numberOfConfirmations }, { where: { id: transaction.id } });
         }
     });
-    console.log('rodei')
 });
 
 

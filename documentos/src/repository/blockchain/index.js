@@ -1,6 +1,6 @@
 const { anchor } = require('../../config/anchor');
 const axios = require('axios').default;
-const { WALLET_ADDRESS, WALLET_WIF, TOTAL_FREE_SATOSHI, BLOCKCYPHER_API_URL } = require('../../config/secret');
+const { WALLET_WIF, TOTAL_FREE_SATOSHI, BLOCKCYPHER_API_URL } = require('../../config/secret');
 
 async function createRawTransaction(hash) {
 

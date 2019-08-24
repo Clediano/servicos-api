@@ -54,8 +54,8 @@ async function createDataRegister(blockTransactionId, req, res) {
         })
 
         const document = await Document.create({
-            oidArchive: data.id,
-            organizationId: organization
+            oidarchive: data.id,
+            organizationid: organization
         });
 
         if (!document.id)
@@ -67,14 +67,14 @@ async function createDataRegister(blockTransactionId, req, res) {
             res.sendStatus(400).send({ error: 'Não foi possível localizar a transação: ' + txId });
 
         const transaction = await Transaction.create({
-            transactionId: txStats.id,
+            transactionid: txStats.id,
             height: txStats.blockHeight,
             hash: txStats.blockHash,
             confirmation: txStats.confirmations,
             size: txStats.sizeBytes,
             opreturn: txStats.opReturn,
             confirmed: false,
-            documentId: document.id
+            documentid: document.id
         });
 
         const transactionWithDocument = await Transaction.findOne({
