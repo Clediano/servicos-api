@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { authSecret } = require('../../config/config.js');
+const { authSecret } = require('../config/config.js');
 
 module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;
