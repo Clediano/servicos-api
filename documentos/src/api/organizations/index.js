@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const uploadConfig = require('../../config/upload');
+const upload = multer(uploadConfig);
 
-const { getWalletInformation, createWallet, updateWallet } = require('../../repository/organization');
+const { getWalletInformation, createWallet, updateWallet, updateAvatar } = require('../../repository/organization');
 
 /**
  * @param organizationid: file hash
@@ -23,5 +26,14 @@ router.post('/:id/create_wallet', (req, res) => {
 router.put('/:id/update_wallet', (req, res) => {
     updateWallet(req, res);
 });
+
+/**
+ * @param Image
+ */
+router.post('/:id/update_avatar', upload.single('file'), async (req, res) => {
+    updateAvatar(req, res);
+});
+
+
 
 module.exports = app => app.use('/organization', router);

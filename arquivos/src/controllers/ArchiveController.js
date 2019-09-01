@@ -8,6 +8,7 @@ const Archive = require('../models/Archive');
 const fs = require('fs');
 
 router.post('/', upload.single('file'), async (req, res) => {
+
     fs.readFile(req.file.path, async (err, file) => {
 
         if (err)
@@ -23,7 +24,8 @@ router.post('/', upload.single('file'), async (req, res) => {
 
             return res.status(201).json({
                 _id: arquivo._id,
-                hash: arquivo.hash
+                hash: arquivo.hash,
+                file: arquivo.file
             });
         }
 

@@ -9,7 +9,7 @@ const databaseConnection = require('./config/config.js').databaseConnection;
 
 mongoose.connect(databaseConnection, { useNewUrlParser: true });
 
-app.use(auth);
+//app.use(auth);
 app.use(helmet());
 app.use(cors());
 app.use(bodyParser.urlencoded({
