@@ -12,7 +12,6 @@ function filterTransactionByHash({ data }, hash) {
 }
 
 // -> '0 */1 * * *' : “At minute 0 past every hour.”.
-
 cron.schedule('0 */1 * * *', async () => {
 
     const transactions = await Transaction.findAll({ where: { confirmed: false }, order: [['createdAt', 'ASC']] });

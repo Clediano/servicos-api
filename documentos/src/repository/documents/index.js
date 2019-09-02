@@ -33,9 +33,9 @@ async function getExistTransaction(hash) {
 
 async function findTransactionsByOrganization(req, res) {
 
-    const { organization } = req.body;
+    const { id } = req.params;
 
-    const documents = await Transaction.findAll({ where: { organizationid: organization }, order: [['createdAt', 'DESC']] });
+    const documents = await Transaction.findAll({ where: { organizationid: id }, order: [['createdAt', 'DESC']] });
 
     if (documents) {
         res.send(documents);

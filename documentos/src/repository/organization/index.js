@@ -2,7 +2,9 @@ const Wallet = require('../../database/models').wallet;
 const Organization = require('../../database/models').organization;
 const axios = require('../../config/axios');
 const fs = require('fs');
-var FormData = require('form-data');
+const FormData = require('form-data');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const { verifyExistOrganization } = require('./functions');
 
@@ -145,9 +147,39 @@ async function updateAvatar(req, res) {
     }
 }
 
+async function findOrganizationByName(req, res) {
+
+    const value = req.params.value;
+    const offset = (req.params.offset || 1) * 4;
+    const limit = (req.params.limit || 4);
+
+    try {
+
+        const organizations = await Organization
+            .findAndCountAll({
+                where: {
+                    name: {
+                        [Op.like]: `%${value}%`
+                    }
+                },
+                attributes: ['name', 'email', 'id', 'oidphoto'],
+                offset,
+                limit
+            });
+
+        return res.send({ organizations });
+
+    } catch (err) {
+        console.error(err)
+        return res.status(400).send({ error: 'Ocorreu um erro ao efetuar a pesquisa.' })
+    }
+
+}
+
 module.exports = {
     getWalletInformation,
     createWallet,
     updateWallet,
-    updateAvatar
+    updateAvatar,
+    findOrganizationByName
 };

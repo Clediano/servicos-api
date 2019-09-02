@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const api = require('../../config/axios');
-const fs = require('fs');
 const { createRawTransaction, countOfConfirmation, statisticOfTransaction } = require('../../repository/blockchain');
 const { createDataRegister, verifyExistTransaction, getExistTransaction, findTransactionsByOrganization } = require('../../repository/documents');
 
@@ -33,8 +31,10 @@ router.post('/create', async (req, res) => {
 /**
  * @param transactionId
  */
-router.get('/confirmation', async (req, res) => {
-    countOfConfirmation(req, res);
+router.get('/confirmation/:transactionId', async (req, res) => {
+    const count = countOfConfirmation(req.params.transactionId);
+
+    res.sendStatus(200).send({ count })
 });
 
 /**
@@ -47,7 +47,7 @@ router.post('/statistic', async (req, res) => {
 /**
  * @param organizationid
  */
-router.get('/find_transactions', async (req, res) => {
+router.get('/find_transactions/:id', async (req, res) => {
     findTransactionsByOrganization(req, res);
 });
 

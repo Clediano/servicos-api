@@ -4,7 +4,11 @@ const multer = require('multer');
 const uploadConfig = require('../../config/upload');
 const upload = multer(uploadConfig);
 
-const { getWalletInformation, createWallet, updateWallet, updateAvatar } = require('../../repository/organization');
+const { getWalletInformation,
+    createWallet,
+    updateWallet,
+    updateAvatar,
+    findOrganizationByName } = require('../../repository/organization');
 
 /**
  * @param organizationid: file hash
@@ -34,6 +38,11 @@ router.post('/:id/update_avatar', upload.single('file'), async (req, res) => {
     updateAvatar(req, res);
 });
 
-
+/**
+ * @param fieldName: fieldName
+ */
+router.get('/findByName/:value/:offset/:limit', (req, res) => {
+    findOrganizationByName(req, res);
+});
 
 module.exports = app => app.use('/organization', router);
