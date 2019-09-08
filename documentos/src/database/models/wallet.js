@@ -1,7 +1,7 @@
 'use strict';
 
 const uuid = require('uuid/v4');
-const { criptografar, descriptografar } = require('../../cryptography');
+const { criptografar } = require('../../cryptography');
 
 module.exports = (sequelize, DataTypes) => {
     const Wallet = sequelize.define('wallet', {
@@ -9,9 +9,8 @@ module.exports = (sequelize, DataTypes) => {
         privatekey: DataTypes.STRING,
         wif: DataTypes.STRING,
         address: DataTypes.STRING,
-        organizationid: {
+        organizationId: {
             type: DataTypes.UUID,
-            allowNull: true,
             references: {
                 model: 'organizations',
                 key: 'id'

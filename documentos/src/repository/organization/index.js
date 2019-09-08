@@ -1,23 +1,25 @@
 const Wallet = require('../../database/models').wallet;
+const Intersted = require('../../database/models').intersted;
 const Organization = require('../../database/models').organization;
 const axios = require('../../config/axios');
 const fs = require('fs');
 const FormData = require('form-data');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const uuid = require('uuid');
 
 const { verifyExistOrganization } = require('./functions');
 
 async function getWalletInformation(req, res) {
 
-    const organizationid = req.params.id;
+    const organizationId = req.params.id;
 
-    if (!await verifyExistOrganization(organizationid)) {
+    if (!await verifyExistOrganization(organizationId)) {
         return res.status(400).send({ error: 'Organização não encontrada. Verifique o ID da organização e tente novamente.' });
     }
 
     try {
-        const wallet = await Wallet.findOne({ where: { organizationid } });
+        const wallet = await Wallet.findOne({ where: { organizationId } });
 
         if (!wallet) {
             res.status(400).send({ error: 'Carteira da organização não encontrada.' });
@@ -33,11 +35,11 @@ async function getWalletInformation(req, res) {
 }
 
 async function createWallet(req, res) {
-    const organizationid = req.params.id;
+    const organizationId = req.params.id;
     const { publickey, privatekey, wif, address } = req.body;
 
     try {
-        const [wallet] = await Wallet.findOrCreate({ where: { publickey, privatekey, wif, address }, defaults: { publickey, privatekey, wif, address, organizationid } });
+        const [wallet] = await Wallet.findOrCreate({ where: { publickey, privatekey, wif, address }, defaults: { publickey, privatekey, wif, address, organizationId } });
 
         res.status(201).send({ wallet });
 
@@ -49,19 +51,19 @@ async function createWallet(req, res) {
 };
 
 async function updateWallet(req, res) {
-    const organizationid = req.params.id;
+    const organizationId = req.params.id;
     const { publickey, privatekey, wif, address } = req.body;
 
-    if (!organizationid) {
+    if (!organizationId) {
         return res.status(400).send({ error: 'É necessário fornecer o ID da carteira para poder atualizá-lo.' });
     }
 
-    if (!await verifyExistOrganization(organizationid)) {
+    if (!await verifyExistOrganization(organizationId)) {
         return res.status(400).send({ error: 'Organização não encontrada. Verifique o ID da organização e tente novamente.' });
     }
 
     try {
-        const [rowsUpdated, [{ dataValues }]] = await Wallet.update({ organizationid, publickey, privatekey, wif, address, organizationid }, { where: { organizationid }, returning: true });
+        const [rowsUpdated, [{ dataValues }]] = await Wallet.update({ organizationId, publickey, privatekey, wif, address }, { where: { organizationId }, returning: true });
 
         res.status(201).send({ wallet: dataValues });
     } catch (err) {
@@ -147,11 +149,27 @@ async function updateAvatar(req, res) {
     }
 }
 
+async function findElementsWithInvite(organizationId) {
+    let organizationInvited = [];
+
+    const dataValues = await Intersted.findAll({ where: { organizationInterested: organizationId, match: true }, attributes: ["organizationInvited"], raw: true });
+
+    organizationInvited = dataValues.map(obj => {
+        return obj['organizationInvited'];
+    });
+
+    organizationInvited.push(organizationId);
+
+    return organizationInvited;
+}
+
 async function findOrganizationByName(req, res) {
 
     const value = req.params.value;
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
+    const organizationId = req.params.id;
+    var organizationInvited = await findElementsWithInvite(organizationId);
 
     try {
 
@@ -160,6 +178,9 @@ async function findOrganizationByName(req, res) {
                 where: {
                     name: {
                         [Op.like]: `%${value}%`
+                    },
+                    id: {
+                        [Op.notIn]: organizationInvited
                     }
                 },
                 attributes: ['name', 'email', 'id', 'oidphoto'],
@@ -173,13 +194,164 @@ async function findOrganizationByName(req, res) {
         console.error(err)
         return res.status(400).send({ error: 'Ocorreu um erro ao efetuar a pesquisa.' })
     }
-
 }
+
+async function findOrganizationByAddress(req, res) {
+
+    const value = req.params.value;
+    const offset = (req.params.offset || 1) * 4;
+    const limit = (req.params.limit || 4);
+    const organizationId = req.params.id;
+    var organizationInvited = await findElementsWithInvite(organizationId);
+
+    try {
+
+        const wallets = await Wallet
+            .findAndCountAll({
+                where: {
+                    address: {
+                        [Op.like]: `%${value}%`
+                    },
+                    organizationId: {
+                        [Op.notIn]: organizationInvited
+                    }
+                },
+                offset,
+                limit
+            });
+
+        if (wallets && wallets.rows.length > 0) {
+            let rows = wallets.rows;
+            let orgs = [];
+
+            for (let i = 0; i < rows.length; i++) {
+
+                const wallet = rows[i];
+
+                await Organization.findOne({
+                    where: {
+                        id: wallet.organizationId
+                    },
+                    attributes: ['name', 'email', 'id', 'oidphoto'],
+                }).then(result => {
+                    orgs.push(result.dataValues)
+                })
+            }
+
+            return res.send({
+                organizations: {
+                    count: wallets.count,
+                    rows: [
+                        ...orgs
+                    ]
+                }
+            })
+        }
+
+        return res.send({
+            organizations: {
+                count: 0,
+                rows: []
+            }
+        });
+
+    } catch (err) {
+        console.error(err)
+        return res.status(400).send({ error: 'Ocorreu um erro ao efetuar a pesquisa.' })
+    }
+}
+
+async function findOrganizationByPublicKey(req, res) {
+
+    const value = req.params.value;
+    const offset = (req.params.offset || 1) * 4;
+    const limit = (req.params.limit || 4);
+    const organizationId = req.params.id;
+    var organizationInvited = await findElementsWithInvite(organizationId);
+
+    try {
+        const wallets = await Wallet
+            .findAndCountAll({
+                where: {
+                    publickey: {
+                        [Op.like]: `%${value}%`
+                    },
+                    organizationId: {
+                        [Op.notIn]: organizationInvited
+                    }
+                },
+                offset,
+                limit
+            });
+
+        if (wallets && wallets.rows.length > 0) {
+            let rows = wallets.rows;
+            let orgs = [];
+
+            for (let i = 0; i < rows.length; i++) {
+
+                const wallet = rows[i];
+
+                await Organization.findOne({
+                    where: {
+                        id: wallet.organizationId
+                    },
+                    attributes: ['name', 'email', 'id', 'oidphoto'],
+                }).then(result => {
+                    orgs.push(result.dataValues)
+                })
+            }
+
+            return res.send({
+                organizations: {
+                    count: wallets.count,
+                    rows: [
+                        ...orgs
+                    ]
+                }
+            })
+        }
+
+        return res.send({
+            organizations: {
+                count: 0,
+                rows: []
+            }
+        });
+
+    } catch (err) {
+        console.error(err)
+        return res.status(400).send({ error: 'Ocorreu um erro ao efetuar a pesquisa.' })
+    }
+}
+
+async function sendInvite(req, res) {
+
+    const { organizationInvited, organizationInterested } = req.body;
+
+    await Intersted.findOrCreate({
+        where: {
+            organizationInvited,
+            organizationInterested
+        },
+        defaults: {
+            organizationInvited,
+            organizationInterested,
+            match: false
+        }
+    });
+
+    res.status(200).send('OK');
+}
+
 
 module.exports = {
     getWalletInformation,
     createWallet,
     updateWallet,
     updateAvatar,
-    findOrganizationByName
+    sendInvite,
+    findOrganizationByName,
+    findOrganizationByAddress,
+    findOrganizationByPublicKey
 };

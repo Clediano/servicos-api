@@ -28,17 +28,19 @@ module.exports = {
       confirmed: {
         type: Sequelize.BOOLEAN
       },
-      documentid: {
+      documentId: {
         type: Sequelize.UUID,
-        allowNull: true,
+        allowNull: false,
+        onDelete: 'CASCADE',
         references: {
           model: 'documents',
           key: 'id'
         }
       },
-      organizationid: {
+      organizationId: {
         type: Sequelize.UUID,
-        allowNull: true,
+        allowNull: false,
+        onDelete: 'CASCADE',
         references: {
           model: 'organizations',
           key: 'id'

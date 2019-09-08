@@ -7,12 +7,22 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID
       },
-      publickey: {
-        type: Sequelize.STRING
+      match: {
+        type: Sequelize.BOOLEAN
       },
-      organizationid: {
+      organizationInvited: {
         type: Sequelize.UUID,
-        allowNull: true,
+        allowNull: false,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'organizations',
+          key: 'id'
+        }
+      },
+      organizationInterested: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        onDelete: 'CASCADE',
         references: {
           model: 'organizations',
           key: 'id'

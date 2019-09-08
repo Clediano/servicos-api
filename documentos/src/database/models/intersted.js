@@ -3,16 +3,17 @@
 const uuid = require('uuid/v4');
 
 module.exports = (sequelize, DataTypes) => {
-  const intersted = sequelize.define('intersted', {
-    publicKey: DataTypes.STRING,
-    organizationid: {
-      type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: 'organizations',
-        key: 'id'
-      }
+  const Intersted = sequelize.define('intersted', {
+    organizationInvited: {
+      type: DataTypes.UUID
     },
+    organizationInterested: {
+      type: DataTypes.UUID
+    },
+    match: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    }
   },
     {
       hooks: {
@@ -22,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   );
-  intersted.associate = function (models) {
+  Intersted.associate = function (models) {
     // associations can be defined here
   };
-  return intersted;
+  return Intersted;
 };

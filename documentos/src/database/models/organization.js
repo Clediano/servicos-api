@@ -35,8 +35,13 @@ module.exports = (sequelize, DataTypes) => {
         },
       }
     });
-    Organization.associate = function (models) {
+  Organization.associate = function (models) {
     // associations can be defined here
+    Organization.hasMany(models.document);
+
+    Organization.hasMany(models.transaction);
+
+    Organization.hasOne(models.wallet);
   };
   return Organization;
 };

@@ -11,9 +11,10 @@ module.exports = {
       oidarchive: {
         type: Sequelize.STRING
       },
-      organizationid: {
+      organizationId: {
         type: Sequelize.UUID,
-        allowNull: true,
+        allowNull: false,
+        onDelete: 'CASCADE',
         references: {
           model: 'organizations',
           key: 'id'

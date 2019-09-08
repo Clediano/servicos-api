@@ -8,10 +8,13 @@ const { getWalletInformation,
     createWallet,
     updateWallet,
     updateAvatar,
-    findOrganizationByName } = require('../../repository/organization');
+    sendInvite,
+    findOrganizationByName,
+    findOrganizationByAddress,
+    findOrganizationByPublicKey } = require('../../repository/organization');
 
 /**
- * @param organizationid: file hash
+ * @param organizationId: file hash
  */
 router.get('/:id/wallet_information', (req, res) => {
     getWalletInformation(req, res);
@@ -39,10 +42,37 @@ router.post('/:id/update_avatar', upload.single('file'), async (req, res) => {
 });
 
 /**
- * @param fieldName: fieldName
+ * @param value: value
+ * @param offset: offset
+ * @param limit: limit
  */
-router.get('/findByName/:value/:offset/:limit', (req, res) => {
+router.get('/:id/findByName/:value/:offset/:limit', (req, res) => {
     findOrganizationByName(req, res);
+});
+
+/**
+ * @param value: value
+ * @param offset: offset
+ * @param limit: limit
+ */
+router.get('/:id/findOrganizationByAddress/:value/:offset/:limit', (req, res) => {
+    findOrganizationByAddress(req, res);
+});
+
+/**
+ * @param value: value
+ * @param offset: offset
+ * @param limit: limit
+ */
+router.get('/:id/findOrganizationByPublicKey/:value/:offset/:limit', (req, res) => {
+    findOrganizationByPublicKey(req, res);
+});
+
+/**
+ * @param Image
+ */
+router.post('/send_invite', async (req, res) => {
+    sendInvite(req, res);
 });
 
 module.exports = app => app.use('/organization', router);

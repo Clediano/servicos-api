@@ -35,7 +35,7 @@ async function findTransactionsByOrganization(req, res) {
 
     const { id } = req.params;
 
-    const documents = await Transaction.findAll({ where: { organizationid: id }, order: [['createdAt', 'DESC']] });
+    const documents = await Transaction.findAll({ where: { organizationId: id }, order: [['createdAt', 'DESC']] });
 
     if (documents) {
         res.send(documents);
@@ -55,7 +55,7 @@ async function createDataRegister(blockTransactionId, req, res) {
 
         const document = await Document.create({
             oidarchive: data.id,
-            organizationid: organization
+            organizationId: organization
         });
 
         if (!document.id)
@@ -74,7 +74,7 @@ async function createDataRegister(blockTransactionId, req, res) {
             size: txStats.sizeBytes,
             opreturn: txStats.opReturn,
             confirmed: false,
-            documentid: document.id
+            documentId: document.id
         });
 
         const transactionWithDocument = await Transaction.findOne({
