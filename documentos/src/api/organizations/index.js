@@ -1,17 +1,24 @@
 const express = require('express');
-const router = express.Router();
 const multer = require('multer');
+
+const router = express.Router();
+
 const uploadConfig = require('../../config/upload');
 const upload = multer(uploadConfig);
 
-const { getWalletInformation,
-    createWallet,
-    updateWallet,
-    updateAvatar,
-    sendInvite,
-    findOrganizationByName,
+const { sendInvite } = require('../../repository/organization/invite');
+const { updateAvatar } = require('../../repository/organization/avatar');
+const { searchAllNotificationByOrganization,
+    acceptSolicitaion,
+    rejectSolicitaion,
+    countNumberOfNotifications } = require('../../repository/organization/notification');
+const {
     findOrganizationByAddress,
-    findOrganizationByPublicKey } = require('../../repository/organization');
+    findOrganizationByName,
+    findOrganizationByPublicKey } = require('../../repository/organization/search');
+const { createWallet,
+    updateWallet,
+    getWalletInformation } = require('../../repository/organization/wallet');
 
 /**
  * @param organizationId: file hash
@@ -73,6 +80,34 @@ router.get('/:id/findOrganizationByPublicKey/:value/:offset/:limit', (req, res) 
  */
 router.post('/send_invite', async (req, res) => {
     sendInvite(req, res);
+});
+
+/**
+ * @param Object: { organizationInterested, organizationInvited }
+ */
+router.post('/accept_invite', async (req, res) => {
+    acceptSolicitaion(req, res);
+});
+
+/**
+ * @param Object: { organizationInterested, organizationInvited }
+ */
+router.post('/reject_invitation', async (req, res) => {
+    rejectSolicitaion(req, res);
+});
+
+/**
+ * @param id: id of organization
+ */
+router.get('/:id/findAllNotifications', (req, res) => {
+    searchAllNotificationByOrganization(req, res);
+});
+
+/**
+ * @param id: id of organization
+ */
+router.get('/:id/countNumberOfNotifications', (req, res) => {
+    countNumberOfNotifications(req, res);
 });
 
 module.exports = app => app.use('/organization', router);
