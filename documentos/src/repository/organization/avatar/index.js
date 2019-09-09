@@ -12,14 +12,14 @@ async function updateAvatar(req, res) {
     if (organization.oidphoto) {
         axios.delete(`/file/${organization.oidphoto}`)
             .then(() => {
-
+                
+                console.log(req.file)
                 fs.readFile(req.file.path, (err, file) => {
 
                     if (err) return res.json({ error: 'Erro ao ler a imagem, por favor, tente novamente.' });
 
                     const formData = new FormData();
                     formData.append('file', fs.createReadStream(req.file.path));
-
                     const config = { headers: { 'Content-Type': `multipart/form-data; boundary=${formData.getBoundary()}` } };
 
                     axios.post('/file', formData, config)

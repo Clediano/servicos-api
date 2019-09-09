@@ -10,23 +10,21 @@ const fs = require('fs');
 router.post('/', upload.single('file'), async (req, res) => {
 
     fs.readFile(req.file.path, async (err, file) => {
+console.log(req.file)
+        const { filename, mimetype, size } = req.file;
 
-        if (err)
-            return res.json({ error: 'Erro ao ler a imagem, por favor, tente novamente.' });
+        if (err) return res.json({ error: 'Erro ao ler a imagem, por favor, tente novamente.' });
 
-        const arquivo = await Archive.create({ hash: sha256(file), file });
+        const arquivo = await Archive.create({ hash: sha256(file), filename, mimetype, size, file });
 
         if (arquivo) {
             fs.unlink(req.file.path, err => {
-                if (err)
+                if (err) {
                     console.error('Erro ao deletar a imagem.', err);
+                }
             });
 
-            return res.status(201).json({
-                _id: arquivo._id,
-                hash: arquivo.hash,
-                file: arquivo.file
-            });
+            return res.status(201).json(arquivo);
         }
 
         return res.status(400).json({ error: 'Erro ao salvar arquivo no banco de dados.' })
@@ -38,8 +36,9 @@ router.get('/:id', async (req, res) => {
 
     const arquivo = await Archive.findById(id);
 
-    if (arquivo)
+    if (arquivo) {
         return res.send(arquivo);
+    }
 
     return res.status(404).json({ erro: 'Nenhum arquivo com este ID foi encontrado.' });
 });
@@ -48,7 +47,7 @@ router.get('/findByHash/:hash', async (req, res) => {
     const { hash } = req.params;
 
     const arquivo = await Archive.findOne({ hash });
-    
+
     if (arquivo)
         return res.send({
             id: arquivo._id,

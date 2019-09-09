@@ -5,6 +5,9 @@ const ArchiveSchema = new mongoose.Schema({
         type: String,
         max: 128
     },
+    filename: String,
+    mimetype: String,
+    size: Number,
     file: Buffer,
 }, {
         timestamps: true
