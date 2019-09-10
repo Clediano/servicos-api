@@ -17,6 +17,7 @@ router.post('/create', async (req, res) => {
 
         createDataRegister(txId, req, res);
     } else {
+
         const { hash: transactionId } = await getExistTransaction(hash);
 
         const { txStats } = await statisticOfTransaction(transactionId);
@@ -40,7 +41,7 @@ router.get('/confirmation/:transactionId', async (req, res) => {
 /**
  * @param transactionId
  */
-router.post('/statistic', async (req, res) => {
+router.get('/statistic/:transactionId', async (req, res) => {
     statisticOfTransaction(req, res);
 });
 

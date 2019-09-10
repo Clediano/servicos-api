@@ -54,7 +54,7 @@ async function createDataRegister(blockTransactionId, req, res) {
         })
 
         const document = await Document.create({
-            oidarchive: data.id,
+            oidarchive: data._id,
             organizationId: organization
         });
 

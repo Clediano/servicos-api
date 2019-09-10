@@ -86,7 +86,6 @@ async function statisticOfTransaction(transactionId) {
 
 async function confirmRawTransaction(transactionId, expectedValue) {
 
-
     let result;
 
     try {
