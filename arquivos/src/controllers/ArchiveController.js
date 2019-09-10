@@ -8,9 +8,7 @@ const Archive = require('../models/Archive');
 const fs = require('fs');
 
 router.post('/', upload.single('file'), async (req, res) => {
-
     fs.readFile(req.file.path, async (err, file) => {
-console.log(req.file)
         const { filename, mimetype, size } = req.file;
 
         if (err) return res.json({ error: 'Erro ao ler a imagem, por favor, tente novamente.' });
