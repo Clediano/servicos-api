@@ -8,15 +8,20 @@ const upload = multer(uploadConfig);
 
 const { sendInvite } = require('../../repository/organization/invite');
 const { updateAvatar } = require('../../repository/organization/avatar');
+
 const { searchAllNotificationByOrganization,
     acceptSolicitaion,
     rejectSolicitaion,
     countNumberOfNotifications } = require('../../repository/organization/notification');
+
 const {
     findOrganizationByAddress,
     findOrganizationByName,
-    findOrganizationByPublicKey } = require('../../repository/organization/search');
-const { createWallet,
+    findOrganizationByPublicKey,
+    findSharedOrganizations } = require('../../repository/organization/search');
+
+const {
+    createWallet,
     updateWallet,
     getWalletInformation } = require('../../repository/organization/wallet');
 
@@ -108,6 +113,13 @@ router.get('/:id/findAllNotifications', (req, res) => {
  */
 router.get('/:id/countNumberOfNotifications', (req, res) => {
     countNumberOfNotifications(req, res);
+});
+
+/**
+ * @param id: id of organization
+ */
+router.get('/:id/findSharedOrganizations/:offset/:limit', (req, res) => {
+    findSharedOrganizations(req, res);
 });
 
 module.exports = app => app.use('/organization', router);

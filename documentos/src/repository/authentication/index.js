@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+
 const { descriptografar } = require('../../cryptography');
 
 const Organization = require('../../database/models').organization;
+
 const mailer = require('../../modules/mailer');
 
 const { AUTH_SECRET } = require('../../config/secret');
@@ -14,7 +16,8 @@ async function register(req, res) {
 
     try {
         const [organization, created] = await Organization.findOrCreate({ where: { email }, defaults: { name, email, password } });
-
+console.log(organization)
+console.log(created)
         if (!created) {
             res.status(400).send({ error: 'Este e-mail já está sendo usado.' });
         }
@@ -25,6 +28,7 @@ async function register(req, res) {
         });
 
     } catch (err) {
+        console.log(err)
         return res.status(400).send({ error: 'Ocorreu um erro ao se registrar.' })
     }
 

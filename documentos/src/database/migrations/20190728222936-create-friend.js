@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('intersteds', {
+    return queryInterface.createTable('friends', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -10,7 +10,7 @@ module.exports = {
       match: {
         type: Sequelize.BOOLEAN
       },
-      organizationInvited: {
+      invitedid: {
         type: Sequelize.UUID,
         allowNull: false,
         onDelete: 'CASCADE',
@@ -19,7 +19,7 @@ module.exports = {
           key: 'id'
         }
       },
-      organizationInterested: {
+      interestedid: {
         type: Sequelize.UUID,
         allowNull: false,
         onDelete: 'CASCADE',
@@ -39,6 +39,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('intersteds');
+    return queryInterface.dropTable('friends');
   }
 };

@@ -4,27 +4,34 @@ const uuid = require('uuid/v4');
 
 module.exports = (sequelize, DataTypes) => {
   const Transaction = sequelize.define('transaction', {
-    transactionid: DataTypes.STRING,
-    height: DataTypes.INTEGER,
-    hash: DataTypes.STRING,
-    opreturn: DataTypes.STRING,
-    confirmation: DataTypes.INTEGER,
-    size: DataTypes.INTEGER,
-    confirmed: DataTypes.BOOLEAN,
-    documentId: {
+    transaction: {
+      type: DataTypes.STRING
+    },
+    height: {
+      type: DataTypes.INTEGER
+    },
+    hash: {
+      type: DataTypes.STRING
+    },
+    opreturn: {
+      type: DataTypes.STRING
+    },
+    confirmations: {
+      type: DataTypes.INTEGER
+    },
+    size: {
+      type: DataTypes.INTEGER
+    },
+    confirmed: {
+      type: DataTypes.BOOLEAN
+    },
+    documentid: {
       type: DataTypes.UUID,
       references: {
         model: 'documents',
         key: 'id'
       }
     },
-    organizationId: {
-      type: DataTypes.UUID,
-      references: {
-        model: 'organizations',
-        key: 'id'
-      }
-    }
   },
     {
       hooks: {
@@ -35,7 +42,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Transaction.associate = function (models) {
-    // associations can be defined here
+    Transaction.belongsTo(models.document, {
+      foreignKey: 'documentid'
+    });
   };
   return Transaction;
 };

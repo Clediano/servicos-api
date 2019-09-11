@@ -7,7 +7,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID
       },
-      transactionid: {
+      transaction: {
         type: Sequelize.STRING
       },
       height: {
@@ -19,7 +19,7 @@ module.exports = {
       opreturn: {
         type: Sequelize.STRING
       },
-      confirmation: {
+      confirmations: {
         type: Sequelize.INTEGER
       },
       size: {
@@ -28,21 +28,12 @@ module.exports = {
       confirmed: {
         type: Sequelize.BOOLEAN
       },
-      documentId: {
+      documentid: {
         type: Sequelize.UUID,
         allowNull: false,
         onDelete: 'CASCADE',
         references: {
           model: 'documents',
-          key: 'id'
-        }
-      },
-      organizationId: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'organizations',
           key: 'id'
         }
       },

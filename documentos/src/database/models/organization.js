@@ -21,27 +21,44 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    oidphoto: DataTypes.STRING,
-    passwordresettoken: DataTypes.STRING,
-    passwordresetexpired: DataTypes.DATE
+    oidphoto: {
+      type: DataTypes.STRING
+    },
+    passwordresettoken: {
+      type: DataTypes.STRING
+    },
+    passwordresetexpired: {
+      type: DataTypes.DATE
+    },
   }, {
-      hooks: {
-        beforeCreate: async organization => {
-          organization.id = uuid();
-          organization.password = await bcrypt.hash(organization.getDataValue('password'), 10);
-        },
-        beforeUpdate: async organization => {
-          organization.password = await bcrypt.hash(organization.getDataValue('password'), 10);
-        },
-      }
-    });
+    hooks: {
+      beforeCreate: async organization => {
+        organization.id = uuid();
+        organization.password = await bcrypt.hash(organization.getDataValue('password'), 10);
+      },
+      beforeUpdate: async organization => {
+        organization.password = await bcrypt.hash(organization.getDataValue('password'), 10);
+      },
+    }
+  });
   Organization.associate = function (models) {
-    // associations can be defined here
-    Organization.hasMany(models.document);
 
-    Organization.hasMany(models.transaction);
+    Organization.hasMany(models.document, {
+      foreignKey: 'organizationid',
+    });
 
-    Organization.hasOne(models.wallet);
+    Organization.hasOne(models.wallet, {
+      foreignKey: 'organizationid',
+    });
+
+    Organization.hasMany(models.friend, {
+      foreignKey: 'interestedid'
+    });
+
+    Organization.hasMany(models.friend, {
+      foreignKey: 'invitedid'
+    });
+
   };
   return Organization;
 };

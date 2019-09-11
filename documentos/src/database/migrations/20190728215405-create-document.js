@@ -11,7 +11,7 @@ module.exports = {
       oidarchive: {
         type: Sequelize.STRING
       },
-      organizationId: {
+      organizationid: {
         type: Sequelize.UUID,
         allowNull: false,
         onDelete: 'CASCADE',

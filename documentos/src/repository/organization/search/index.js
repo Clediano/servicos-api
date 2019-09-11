@@ -1,5 +1,6 @@
 const Wallet = require('../../../database/models').wallet;
 const Organization = require('../../../database/models').organization;
+const Intersted = require('../../../database/models').intersted;
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -168,8 +169,41 @@ async function findOrganizationByPublicKey(req, res) {
     }
 }
 
+async function findSharedOrganizations(req, res) {
+
+    const organizationId = req.params.id;
+
+    const offset = (req.params.offset || 1) * 4;
+    const limit = (req.params.limit || 4);
+
+    try {
+        Intersted.findAll({
+            where: {
+                organizationInterested: organizationId,
+                match: true
+            },
+            include: [
+                { model: Organization, required: true }
+            ],
+            offset,
+            limit
+        })
+            .then(intersteds => {
+                res.send(intersteds);
+            })
+            .catch(err => {
+                console.error(err)
+                res.status(400).send({ error: 'Ocorreu um erro ao localizar seus contatos pareados.' })
+            })
+    } catch (err) {
+        res.status(400).send({ error: 'Ocorreu um erro ao localizar seus contatos pareados.' })
+    }
+
+}
+
 module.exports = {
     findOrganizationByName,
     findOrganizationByAddress,
-    findOrganizationByPublicKey
+    findOrganizationByPublicKey,
+    findSharedOrganizations
 }

@@ -1,15 +1,14 @@
 'use strict';
 
 const bcrypt = require('bcryptjs');
-const uuid = require('uuid/v4');
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('organizations', [{
-        id: uuid(),
+        id: '611dbd62-8ba4-498c-8447-f733c89c31ff',
         name: 'Administrador',
         email: 'cledianoestefenon@gmail.com',
-        password: bcrypt.hashSync('password'),
+        password: bcrypt.hashSync('123'),
         oidphoto: '',
         passwordresettoken: '',
         passwordresetexpired: null,

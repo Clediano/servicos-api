@@ -5,11 +5,23 @@ const { criptografar } = require('../../cryptography');
 
 module.exports = (sequelize, DataTypes) => {
     const Wallet = sequelize.define('wallet', {
-        publickey: DataTypes.STRING,
-        privatekey: DataTypes.STRING,
-        wif: DataTypes.STRING,
-        address: DataTypes.STRING,
-        organizationId: {
+        publickey: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        privatekey: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        wif: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        address: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        organizationid: {
             type: DataTypes.UUID,
             references: {
                 model: 'organizations',
@@ -28,7 +40,9 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
     Wallet.associate = function (models) {
-        // associations can be defined here
+        Wallet.belongsTo(models.organization, {
+            foreignKey: 'organizationid'
+        });
     };
     return Wallet;
 };

@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      organizationId: {
+      organizationid: {
         type: Sequelize.UUID,
         allowNull: false,
         onDelete: 'CASCADE',

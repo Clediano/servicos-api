@@ -1,17 +1,18 @@
 const Wallet = require('../../../database/models').wallet;
+const Organization = require('../../../database/models').organization;
 
 const { verifyExistOrganization } = require('../functions');
 
 async function getWalletInformation(req, res) {
 
-    const organizationId = req.params.id;
-
-    if (!await verifyExistOrganization(organizationId)) {
-        return res.status(400).send({ error: 'Organização não encontrada. Verifique o ID da organização e tente novamente.' });
-    }
+    const organizationid = req.params.id;
 
     try {
-        const wallet = await Wallet.findOne({ where: { organizationId } });
+        const wallet = await Wallet.findOne({
+            where: {
+                organizationid
+            }
+        });
 
         if (!wallet) {
             res.status(400).send({ error: 'Carteira da organização não encontrada.' });
@@ -31,7 +32,21 @@ async function createWallet(req, res) {
     const { publickey, privatekey, wif, address } = req.body;
 
     try {
-        const [wallet] = await Wallet.findOrCreate({ where: { publickey, privatekey, wif, address }, defaults: { publickey, privatekey, wif, address, organizationId } });
+        const [wallet] = await Wallet.findOrCreate({
+            where: {
+                publickey,
+                privatekey,
+                wif,
+                address
+            },
+            defaults: {
+                publickey,
+                privatekey,
+                wif,
+                address,
+                organizationId
+            }
+        });
 
         res.status(201).send({ wallet });
 

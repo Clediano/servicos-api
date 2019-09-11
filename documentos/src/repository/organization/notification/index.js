@@ -1,4 +1,4 @@
-const Intersted = require('../../../database/models').intersted;
+const Friends = require('../../../database/models').friend;
 const Organization = require('../../../database/models').organization;
 
 async function searchAllNotificationByOrganization(req, res) {
@@ -6,7 +6,7 @@ async function searchAllNotificationByOrganization(req, res) {
 
     let organizationsInteresteds = [];
 
-    const intersteds = await Intersted.findAll({
+    const friends = await Friends.findAll({
         where: {
             organizationInvited: organizationId,
             match: false
@@ -14,16 +14,16 @@ async function searchAllNotificationByOrganization(req, res) {
         raw: true
     });
 
-    if (intersteds && intersteds.length > 0) {
+    if (friends && friends.length > 0) {
         let orgs = [];
 
-        for (let i = 0; i < intersteds.length; i++) {
+        for (let i = 0; i < friends.length; i++) {
 
-            const intersted = intersteds[i];
+            const friend = friends[i];
 
             await Organization.findOne({
                 where: {
-                    id: intersted.organizationInterested
+                    id: friend.organizationInterested
                 },
                 attributes: ['name', 'email', 'id', 'oidphoto'],
             }).then(result => {
@@ -41,7 +41,7 @@ async function searchAllNotificationByOrganization(req, res) {
 async function acceptSolicitaion(req, res) {
     const { organizationInterested, organizationInvited } = req.body;
 
-    Intersted.findOne({
+    Friends.findOne({
         where: {
             organizationInvited,
             organizationInterested,
@@ -49,7 +49,7 @@ async function acceptSolicitaion(req, res) {
         }
     })
         .then(({ dataValues }) => {
-            Intersted.update({ ...dataValues, match: true }, { where: { id: dataValues.id }, returning: true })
+            Friends.update({ ...dataValues, match: true }, { where: { id: dataValues.id }, returning: true })
                 .then(({ dataValues }) => {
                     res.send(dataValues)
                 })
@@ -65,7 +65,7 @@ async function acceptSolicitaion(req, res) {
 async function rejectSolicitaion(req, res) {
     const { organizationInterested, organizationInvited } = req.body;
 
-    Intersted.findOne({
+    Friends.findOne({
         where: {
             organizationInvited,
             organizationInterested,
@@ -73,7 +73,7 @@ async function rejectSolicitaion(req, res) {
         }
     })
         .then(({ dataValues }) => {
-            Intersted.destroy({ where: { id: dataValues.id } })
+            Friends.destroy({ where: { id: dataValues.id } })
                 .then(() => {
                     res.status(200).send('OK')
                 })
@@ -91,13 +91,13 @@ async function rejectSolicitaion(req, res) {
 async function countNumberOfNotifications(req, res) {
     const organizationId = req.params.id;
 
-    const intersteds = await Intersted.findAndCountAll({
+    const friends = await Friends.findAndCountAll({
         where: {
             organizationInvited: organizationId,
             match: false
         },
     });
-    res.send({ count: intersteds.count })
+    res.send({ count: friends.count })
 }
 
 module.exports = {
