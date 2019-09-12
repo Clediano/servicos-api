@@ -1,6 +1,6 @@
 const Wallet = require('../../../database/models').wallet;
 const Organization = require('../../../database/models').organization;
-const Intersted = require('../../../database/models').intersted;
+const Friend = require('../../../database/models').friend;
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -128,25 +128,32 @@ async function findSharedOrganizations(req, res) {
     const limit = (req.params.limit || 4);
 
     try {
-        Intersted.findAll({
+        Friend.findAll({
             where: {
-                organizationInterested: organizationId,
-                match: true
+                interestedid: organizationId
+            },
+            attributes: {
+                exclude: ['invitedid', 'interestedid', 'updatedAt', 'createdAt'],
             },
             include: [
-                { model: Organization, required: true }
+                {
+                    model: Organization,
+                    as: 'Invited',
+                    attributes: ['name', 'email', 'id', 'oidphoto'],
+                }
             ],
             offset,
             limit
         })
-            .then(intersteds => {
-                res.send(intersteds);
+            .then(friends => {
+                res.send(friends);
             })
             .catch(err => {
                 console.error(err)
                 res.status(400).send({ error: 'Ocorreu um erro ao localizar seus contatos pareados.' })
             })
     } catch (err) {
+        console.error(err)
         res.status(400).send({ error: 'Ocorreu um erro ao localizar seus contatos pareados.' })
     }
 
