@@ -4,71 +4,52 @@ const Organization = require('../../../database/models').organization;
 async function searchAllNotificationByOrganization(req, res) {
     const organizationId = req.params.id;
 
-    let organizationsInteresteds = [];
-
-    const friends = await Friends.findAll({
+    const solicitations = await Friends.findAll({
         where: {
-            organizationInvited: organizationId,
+            invitedid: organizationId,
             match: false
         },
+        attributes: {
+            exclude: ['id', 'match', 'invitedid', 'interestedid', 'createdAt', 'updatedAt'],
+        },
+        include: [
+            { model: Organization, as: 'Interested', attributes: ['name', 'email', 'id', 'oidphoto'] }
+        ],
         raw: true
     });
 
-    if (friends && friends.length > 0) {
-        let orgs = [];
-
-        for (let i = 0; i < friends.length; i++) {
-
-            const friend = friends[i];
-
-            await Organization.findOne({
-                where: {
-                    id: friend.organizationInterested
-                },
-                attributes: ['name', 'email', 'id', 'oidphoto'],
-            }).then(result => {
-                orgs.push(result.dataValues)
-            }).catch(err => {
-                console.error(err)
-            })
-        }
-        res.status(200).send({ organizationsInteresteds: orgs });
-    }
-
-    res.status(200).send({ organizationsInteresteds });
+    res.send({ organizationsInteresteds: solicitations })
 }
 
 async function acceptSolicitaion(req, res) {
-    const { organizationInterested, organizationInvited } = req.body;
+    const { interestedid, invitedid } = req.body;
 
     Friends.findOne({
         where: {
-            organizationInvited,
-            organizationInterested,
+            invitedid,
+            interestedid,
             match: false
         }
-    })
-        .then(({ dataValues }) => {
-            Friends.update({ ...dataValues, match: true }, { where: { id: dataValues.id }, returning: true })
-                .then(({ dataValues }) => {
-                    res.send(dataValues)
-                })
-                .catch(err => {
-                    res.status(400).send({ error: 'Ocorreu um erro ao aceitar o convite de compartilhamento. Tente novamente mais tarde.' })
-                })
-        })
-        .catch(err => {
+    }).then(({ dataValues }) => {
+        Friends.update({ match: true }, { where: { id: dataValues.id }, returning: true }).then(({ dataValues }) => {
+            res.send(dataValues)
+        }).catch(err => {
+            console.log(err)
             res.status(400).send({ error: 'Ocorreu um erro ao aceitar o convite de compartilhamento. Tente novamente mais tarde.' })
         })
+    }).catch(err => {
+        console.log(err)
+        res.status(400).send({ error: 'Ocorreu um erro ao aceitar o convite de compartilhamento. Tente novamente mais tarde.' })
+    })
 }
 
 async function rejectSolicitaion(req, res) {
-    const { organizationInterested, organizationInvited } = req.body;
+    const { interestedid, invitedid } = req.body;
 
     Friends.findOne({
         where: {
-            organizationInvited,
-            organizationInterested,
+            invitedid,
+            interestedid,
             match: false
         }
     })
@@ -93,7 +74,7 @@ async function countNumberOfNotifications(req, res) {
 
     const friends = await Friends.findAndCountAll({
         where: {
-            organizationInvited: organizationId,
+            invitedid: organizationId,
             match: false
         },
     });

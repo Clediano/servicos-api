@@ -1,5 +1,4 @@
 const Wallet = require('../../../database/models').wallet;
-const Organization = require('../../../database/models').organization;
 
 const { verifyExistOrganization } = require('../functions');
 
@@ -28,7 +27,7 @@ async function getWalletInformation(req, res) {
 }
 
 async function createWallet(req, res) {
-    const organizationId = req.params.id;
+    const organizationid = req.params.id;
     const { publickey, privatekey, wif, address } = req.body;
 
     try {
@@ -44,7 +43,7 @@ async function createWallet(req, res) {
                 privatekey,
                 wif,
                 address,
-                organizationId
+                organizationid
             }
         });
 

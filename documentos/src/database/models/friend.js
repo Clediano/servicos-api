@@ -35,9 +35,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Friend.associate = function (models) {
+
     Friend.belongsTo(models.organization, {
-      foreignKey: 'interestedid'
+      foreignKey: 'interestedid',
+      as: 'Interested'
     });
+
+    Friend.belongsTo(models.organization, {
+      foreignKey: 'invitedid',
+      as: 'Invited'
+    });
+
   };
   return Friend;
 };

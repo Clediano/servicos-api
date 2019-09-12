@@ -1,5 +1,5 @@
 const Organization = require('../../../database/models').organization;
-const Intersted = require('../../../database/models').intersted;
+const Friend = require('../../../database/models').friend;
 
 async function verifyExistOrganization(organizationId) {
     try {
@@ -21,10 +21,10 @@ async function findOrganizationById(organizationId) {
 async function findElementsWithInvite(organizationId) {
     let organizationInvited = [];
 
-    const dataValues = await Intersted.findAll({ where: { organizationInterested: organizationId }, attributes: ["organizationInvited"], raw: true });
+    const dataValues = await Friend.findAll({ where: { interestedid: organizationId }, attributes: ["invitedid"], raw: true });
 
     organizationInvited = dataValues.map(obj => {
-        return obj['organizationInvited'];
+        return obj['invitedid'];
     });
 
     organizationInvited.push(organizationId);

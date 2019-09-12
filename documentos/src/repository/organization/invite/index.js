@@ -1,17 +1,14 @@
-const Intersted = require('../../../database/models').intersted;
+const Friend = require('../../../database/models').friend;
 
 async function sendInvite(req, res) {
 
-    const { organizationInvited, organizationInterested } = req.body;
+    const { invitedid, interestedid } = req.body;
 
-    await Intersted.findOrCreate({
-        where: {
-            organizationInvited,
-            organizationInterested
-        },
+    await Friend.findOrCreate({
+        where: { invitedid, interestedid },
         defaults: {
-            organizationInvited,
-            organizationInterested,
+            invitedid,
+            interestedid,
             match: false
         }
     });

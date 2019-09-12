@@ -13,7 +13,7 @@ async function findOrganizationByName(req, res) {
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
     const organizationId = req.params.id;
-    var organizationInvited = await findElementsWithInvite(organizationId);
+    var organizationsWithInvite = await findElementsWithInvite(organizationId);
 
     try {
 
@@ -24,7 +24,7 @@ async function findOrganizationByName(req, res) {
                         [Op.like]: `%${value}%`
                     },
                     id: {
-                        [Op.notIn]: organizationInvited
+                        [Op.notIn]: [organizationId, ...organizationsWithInvite]
                     }
                 },
                 attributes: ['name', 'email', 'id', 'oidphoto'],
@@ -46,58 +46,33 @@ async function findOrganizationByAddress(req, res) {
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
     const organizationId = req.params.id;
-    var organizationInvited = await findElementsWithInvite(organizationId);
+    var organizationsWithInvite = await findElementsWithInvite(organizationId);
 
     try {
 
-        const wallets = await Wallet
+        const organizations = await Wallet
             .findAndCountAll({
                 where: {
                     address: {
                         [Op.like]: `%${value}%`
                     },
-                    organizationId: {
-                        [Op.notIn]: organizationInvited
-                    }
+                    organizationid: {
+                        [Op.not]: [organizationId, ...organizationsWithInvite]
+                    },
+
                 },
+                attributes: {
+                    exclude: ['address', 'privatekey', 'publickey', 'wif', 'createdAt', 'updatedAt', 'id', 'organizationid'],
+                },
+                include: [{
+                    model: Organization,
+                    attributes: ['name', 'email', 'id', 'oidphoto'],
+                }],
                 offset,
                 limit
             });
 
-        if (wallets && wallets.rows.length > 0) {
-            let rows = wallets.rows;
-            let orgs = [];
-
-            for (let i = 0; i < rows.length; i++) {
-
-                const wallet = rows[i];
-
-                await Organization.findOne({
-                    where: {
-                        id: wallet.organizationId
-                    },
-                    attributes: ['name', 'email', 'id', 'oidphoto'],
-                }).then(result => {
-                    orgs.push(result.dataValues)
-                })
-            }
-
-            return res.send({
-                organizations: {
-                    count: wallets.count,
-                    rows: [
-                        ...orgs
-                    ]
-                }
-            })
-        }
-
-        return res.send({
-            organizations: {
-                count: 0,
-                rows: []
-            }
-        });
+        return res.send({ organizations });
 
     } catch (err) {
         console.error(err)
@@ -111,57 +86,33 @@ async function findOrganizationByPublicKey(req, res) {
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
     const organizationId = req.params.id;
-    var organizationInvited = await findElementsWithInvite(organizationId);
+    var organizationsWithInvite = await findElementsWithInvite(organizationId);
 
     try {
-        const wallets = await Wallet
+
+        const organizations = await Wallet
             .findAndCountAll({
                 where: {
                     publickey: {
                         [Op.like]: `%${value}%`
                     },
-                    organizationId: {
-                        [Op.notIn]: organizationInvited
-                    }
+                    organizationid: {
+                        [Op.not]: [organizationId, ...organizationsWithInvite]
+                    },
+
                 },
+                attributes: {
+                    exclude: ['address', 'privatekey', 'publickey', 'wif', 'createdAt', 'updatedAt', 'id', 'organizationid'],
+                },
+                include: [{
+                    model: Organization,
+                    attributes: ['name', 'email', 'id', 'oidphoto'],
+                }],
                 offset,
                 limit
             });
 
-        if (wallets && wallets.rows.length > 0) {
-            let rows = wallets.rows;
-            let orgs = [];
-
-            for (let i = 0; i < rows.length; i++) {
-
-                const wallet = rows[i];
-
-                await Organization.findOne({
-                    where: {
-                        id: wallet.organizationId
-                    },
-                    attributes: ['name', 'email', 'id', 'oidphoto'],
-                }).then(result => {
-                    orgs.push(result.dataValues)
-                })
-            }
-
-            return res.send({
-                organizations: {
-                    count: wallets.count,
-                    rows: [
-                        ...orgs
-                    ]
-                }
-            })
-        }
-
-        return res.send({
-            organizations: {
-                count: 0,
-                rows: []
-            }
-        });
+        return res.send({ organizations });
 
     } catch (err) {
         console.error(err)

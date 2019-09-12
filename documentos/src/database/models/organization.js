@@ -52,11 +52,13 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Organization.hasMany(models.friend, {
-      foreignKey: 'interestedid'
+      foreignKey: 'interestedid',
+      as: 'Interested'
     });
 
     Organization.hasMany(models.friend, {
-      foreignKey: 'invitedid'
+      foreignKey: 'invitedid',
+      as: 'Invited'
     });
 
   };
