@@ -11,6 +11,23 @@ function filterTransactionByHash({ data }, hash) {
     }
 }
 
+async function findTransactionByHash(hash) {
+    return await Transaction.findOne({ where: { hash } })
+}
+
+async function saveTransactionOnly(txStats) {
+    return await Transaction.create({
+        transactionid: txStats.id,
+        height: txStats.blockHeight,
+        hash: txStats.blockHash,
+        confirmation: txStats.confirmations,
+        size: txStats.sizeBytes,
+        opreturn: txStats.opReturn,
+        confirmed: false,
+        documentid: null
+    });
+}
+
 // -> '0 */1 * * *' : “At minute 0 past every hour.”.
 cron.schedule('0 */1 * * *', async () => {
 
@@ -30,5 +47,7 @@ cron.schedule('0 */1 * * *', async () => {
 
 
 module.exports = {
-    filterTransactionByHash
+    filterTransactionByHash,
+    saveTransactionOnly,
+    findTransactionByHash
 }

@@ -1,8 +1,12 @@
 const Document = require('../../database/models').document;
 const Transaction = require('../../database/models').transaction;
-const api = require('../../config/axios');
-const { getAllTransactions, statisticOfTransaction } = require('../blockchain');
-const { filterTransactionByHash } = require('./functions');
+
+const axios = require('../../config/axios');
+const FormData = require('form-data');
+const fs = require('fs');
+
+const { getAllTransactions, statisticOfTransaction, createRawTransaction } = require('../blockchain');
+const { filterTransactionByHash, findTransactionByHash } = require('./functions');
 const { WALLET_ADDRESS } = require('../../config/secret');
 
 async function verifyExistTransaction(hash) {
@@ -35,7 +39,16 @@ async function findTransactionsByOrganization(req, res) {
 
     const { id } = req.params;
 
-    const documents = await Transaction.findAll({ where: { organizationId: id }, order: [['createdAt', 'DESC']] });
+    const documents = await Transaction.findAll({
+        include: [{
+            model: Document,
+            attributes: ['oidarchive'],
+            where: {
+                organizationid: id
+            },
+        }],
+        order: [['createdAt', 'DESC']]
+    });
 
     if (documents) {
         res.send(documents);
@@ -43,19 +56,21 @@ async function findTransactionsByOrganization(req, res) {
     res.status(400).send({ error: "Ocorreu um erro ao buscar os documentos." });
 }
 
-async function createDataRegister(blockTransactionId, req, res) {
+async function createDataRegisterWithHash(blockTransactionId, req, res) {
 
     const { organization, hash } = req.body;
 
     try {
 
-        const data = await api.get(`file/findByHash/${hash}`).catch(() => {
+
+        const data = await axios.get(`file/findByHash/${hash}`).catch(() => {
             res.status(400).send({ error: 'Não foi possível buscar o documento com hash: ' + hash })
         })
 
+
         const document = await Document.create({
-            oidarchive: data._id,
-            organizationId: organization
+            oidarchive: data.id,
+            organizationid: organization
         });
 
         if (!document.id)
@@ -67,14 +82,14 @@ async function createDataRegister(blockTransactionId, req, res) {
             res.sendStatus(400).send({ error: 'Não foi possível localizar a transação: ' + txId });
 
         const transaction = await Transaction.create({
-            transactionid: txStats.id,
+            transactionid: blockTransactionId,
             height: txStats.blockHeight,
             hash: txStats.blockHash,
             confirmation: txStats.confirmations,
             size: txStats.sizeBytes,
             opreturn: txStats.opReturn,
             confirmed: false,
-            documentId: document.id
+            documentid: document.id
         });
 
         const transactionWithDocument = await Transaction.findOne({
@@ -92,9 +107,110 @@ async function createDataRegister(blockTransactionId, req, res) {
     }
 }
 
+async function createDataRegisterWithImage(req, res) {
+
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(req.file.path));
+    formData.append('filename', req.file.filename);
+    formData.append('mimetype', req.file.mimetype);
+    formData.append('size', req.file.size);
+
+    const config = { headers: { 'Content-Type': `multipart/form-data; boundary=${formData.getBoundary()}` } };
+
+    saveImage(req, formData, config, async ({ data }) => {
+
+        const exist = await findTransactionByHash(data.hash)
+
+        if (exist) {
+            deleteImage(data._id);
+            res.send(exist);
+        }
+
+        const { txId, errorCreate } = await createRawTransaction(data.hash, req, res);
+
+        if (errorCreate) {
+            deleteImage(data._id);
+            return res.status(400).json({ error: 'Erro ao salvar arquivo no banco de dados.' })
+        }
+
+        const document = await Document.create({
+            oidarchive: data._id,
+            organizationid: req.body.organization
+        });
+
+        if (!document) {
+            return res.status(400).json({ error: 'Erro ao salvar arquivo no banco de dados.' })
+        }
+
+        const { txStats, errorStatistic } = await statisticOfTransaction(txId);
+
+        if (errorStatistic) {
+            deleteImage(data._id);
+            Document.destroy({ where: { id: document.dataValues.id } })
+            return res.status(400).json({ error: 'Erro ao salvar arquivo no banco de dados.' })
+        }
+
+        const [transaction, created] = await Transaction.findOrCreate({
+            where: {
+                hash: data.hash,
+            },
+            defaults: {
+                transaction: txStats.id,
+                height: txStats.blockHeight,
+                hash: data.hash,
+                confirmations: txStats.confirmations,
+                size: txStats.sizeBytes,
+                opreturn: txStats.opReturn,
+                confirmed: false,
+                documentid: document.dataValues.id
+            }
+        });
+
+        if (!transaction) {
+            deleteImage(data._id);
+            Document.destroy({ where: { id: document.dataValues.id } })
+            return res.status(400).json({ error: 'Erro ao salvar arquivo no banco de dados.' })
+        }
+
+        return res.status(201).send(transaction);
+
+    }, err => {
+        return res.status(400).json({ error: 'Erro ao salvar arquivo no banco de dados.' })
+    });
+
+}
+
+
+
+async function saveImage(req, formData, config, onSuccess, onError) {
+    axios.post('/file', formData, config)
+        .then(resp => {
+            onSuccess && onSuccess(resp)
+        })
+        .catch(err => {
+            onError && onError(err)
+        })
+        .finally(() => {
+            fs.unlink(req.file.path, err => {
+                if (err) console.error('Erro ao deletar a imagem.', err);
+            });
+        })
+}
+
+async function deleteImage(id, onSuccess, onError) {
+    axios.delete(`/${id}`)
+        .then(resp => {
+            onSuccess && onSuccess(resp)
+        })
+        .catch(err => {
+            onError && onError(err)
+        })
+}
+
 module.exports = {
-    createDataRegister,
+    createDataRegisterWithHash,
     verifyExistTransaction,
     getExistTransaction,
-    findTransactionsByOrganization
+    findTransactionsByOrganization,
+    createDataRegisterWithImage
 };

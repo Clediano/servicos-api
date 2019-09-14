@@ -140,6 +140,10 @@ async function findSharedOrganizations(req, res) {
                     model: Organization,
                     as: 'Invited',
                     attributes: ['name', 'email', 'id', 'oidphoto'],
+                    include: {
+                        model: Wallet,
+                        attributes: ['publickey'],
+                    }
                 }
             ],
             offset,

@@ -4,7 +4,7 @@ const uuid = require('uuid/v4');
 
 module.exports = (sequelize, DataTypes) => {
   const Document = sequelize.define('document', {
-    oidArchive: DataTypes.STRING,
+    oidarchive: DataTypes.STRING,
     organizationid: {
       type: DataTypes.UUID,
       references: {
@@ -22,8 +22,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Document.associate = function (models) {
-    Document.hasOne(models.transaction);
-    Document.belongsTo(models.organization);
+
+    Document.hasOne(models.transaction, {
+      foreignKey: 'documentid'
+    });
+
+    Document.belongsTo(models.organization, {
+      foreignKey: 'organizationid'
+    });
   };
   return Document;
 };

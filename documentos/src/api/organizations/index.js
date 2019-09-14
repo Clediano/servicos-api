@@ -49,7 +49,7 @@ router.put('/:id/update_wallet', (req, res) => {
 /**
  * @param Image
  */
-router.post('/:id/update_avatar', upload.single('file'), async (req, res) => {
+router.post('/:id/update_avatar', upload.single('file'), (req, res) => {
     updateAvatar(req, res);
 });
 
