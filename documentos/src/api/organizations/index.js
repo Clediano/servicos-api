@@ -7,7 +7,7 @@ const uploadConfig = require('../../config/upload');
 const upload = multer(uploadConfig);
 
 const { sendInvite } = require('../../repository/organization/invite');
-const { updateAvatar } = require('../../repository/organization/avatar');
+const { updateAvatar, removeAvatar } = require('../../repository/organization/avatar');
 
 const { searchAllNotificationByOrganization,
     acceptSolicitaion,
@@ -51,6 +51,12 @@ router.put('/:id/update_wallet', (req, res) => {
  */
 router.post('/:id/update_avatar', upload.single('file'), (req, res) => {
     updateAvatar(req, res);
+});
+/**
+ * @param Image
+ */
+router.delete('/:organizacaoId/remove_avatar/:avatarId', upload.single('file'), (req, res) => {
+    removeAvatar(req, res);
 });
 
 /**

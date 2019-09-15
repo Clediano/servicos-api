@@ -35,12 +35,25 @@ cron.schedule('0 */1 * * *', async () => {
 
     transactions && transactions.map(async transaction => {
 
-        const numberOfConfirmations = await countOfConfirmation(transactions.transactionId);
+        const { confirmation } = await countOfConfirmation(transaction.transaction);
 
-        if (numberOfConfirmations > 6) {
-            Transaction.update({ confirmations: numberOfConfirmations, confirmed: true }, { where: { id: transaction.id } });
+        if (confirmation > 6) {
+            Transaction.update({
+                confirmations: confirmation,
+                confirmed: true
+            }, {
+                where: {
+                    id: transaction.id
+                }
+            });
         } else {
-            Transaction.update({ confirmations: numberOfConfirmations }, { where: { id: transaction.id } });
+            Transaction.update({
+                confirmations: confirmation
+            }, {
+                where: {
+                    id: transaction.id
+                }
+            });
         }
     });
 });

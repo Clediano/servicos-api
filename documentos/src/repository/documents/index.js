@@ -37,7 +37,7 @@ async function getExistTransaction(hash) {
 
 async function findTransactionsByOrganization(req, res) {
 
-    const { id } = req.params;
+    const { id, offset, limit } = req.params;
 
     const documents = await Transaction.findAll({
         include: [{
@@ -47,7 +47,9 @@ async function findTransactionsByOrganization(req, res) {
                 organizationid: id
             },
         }],
-        order: [['createdAt', 'DESC']]
+        order: [['createdAt', 'DESC']],
+        offset,
+        limit
     });
 
     if (documents) {

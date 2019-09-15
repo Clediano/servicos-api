@@ -45,7 +45,7 @@ async function splitOutput(maxOutputs) {
 }
 
 async function countOfConfirmation(transactionId) {
-
+console.log('transactionId: ', transactionId)
     let result;
 
     try {

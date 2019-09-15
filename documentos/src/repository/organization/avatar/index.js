@@ -46,6 +46,28 @@ async function saveImage(req, res, formData, config) {
         })
 }
 
+async function removeAvatar(req, res) {
+    const { organizacaoId, avatarId } = req.params;
+
+    Organization.update({
+        oidphoto: null
+    }, { where: { id: organizacaoId } })
+        .then(() => {
+            axios.delete(`/file/${avatarId}`)
+                .then(() => {
+                    return res.status(201).json('OK');
+                })
+                .catch(err => {
+                    Organization.update({ oidphoto: avatarId }, { where: { id: organizacaoId } });
+                    console.error(err)
+                    return res.status(400).json({ error: 'Erro ao remover avatar. Tente novamente mais tarde.' })
+                })
+        }).catch(err => {
+            return res.status(400).json({ error: 'Erro ao remover avatar. Tente novamente mais tarde.' })
+        })
+}
+
 module.exports = {
-    updateAvatar
+    updateAvatar,
+    removeAvatar
 }

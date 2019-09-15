@@ -55,9 +55,9 @@ router.post('/create_with_image', upload.single('file'), async (req, res) => {
  * @param transactionId
  */
 router.get('/confirmation/:transactionId', async (req, res) => {
-    const count = countOfConfirmation(req.params.transactionId);
+    const result = await countOfConfirmation(req.params.transactionId);
 
-    res.sendStatus(200).send({ count })
+    res.send(result)
 });
 
 /**
@@ -70,7 +70,7 @@ router.get('/statistic/:transactionId', async (req, res) => {
 /**
  * @param organizationId
  */
-router.get('/find_transactions/:id', async (req, res) => {
+router.get('/find_transactions/:id/:offset/:limit', async (req, res) => {
     findTransactionsByOrganization(req, res);
 });
 
