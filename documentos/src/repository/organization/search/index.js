@@ -163,9 +163,110 @@ async function findSharedOrganizations(req, res) {
 
 }
 
+async function findSharedOrganizationsByName(req, res) {
+
+    const organizationId = req.params.id;
+
+    const offset = (req.params.offset || 1) * 4;
+    const limit = (req.params.limit || 4);
+    const value = (req.params.value || " ");
+
+    try {
+        Friend.findAll({
+            where: {
+                interestedid: organizationId,
+            },
+
+            attributes: {
+                exclude: ['invitedid', 'interestedid', 'updatedAt', 'createdAt'],
+            },
+            include: [
+                {
+                    model: Organization,
+                    as: 'Invited',
+                    attributes: ['name', 'email', 'id', 'oidphoto'],
+                    where: {
+                        name: {
+                            [Op.like]: `%${value}%`
+                        },
+                    },
+                    include: {
+                        model: Wallet,
+                        attributes: ['publickey'],
+                    },
+                }
+            ],
+            offset,
+            limit
+        })
+            .then(friends => {
+                res.send(friends);
+            })
+            .catch(err => {
+                console.error(err)
+                res.status(400).send({ error: 'Ocorreu um erro ao localizar seus contatos pareados.' })
+            })
+    } catch (err) {
+        console.error(err)
+        res.status(400).send({ error: 'Ocorreu um erro ao localizar seus contatos pareados.' })
+    }
+
+}
+
+async function findSharedOrganizationsByEmail(req, res) {
+
+    const organizationId = req.params.id;
+
+    const offset = (req.params.offset || 1) * 4;
+    const limit = (req.params.limit || 4);
+    const value = (req.params.value || " ");
+
+    try {
+        Friend.findAll({
+            where: {
+                interestedid: organizationId,
+            },
+            attributes: {
+                exclude: ['invitedid', 'interestedid', 'updatedAt', 'createdAt'],
+            },
+            include: [
+                {
+                    model: Organization,
+                    as: 'Invited',
+                    attributes: ['name', 'email', 'id', 'oidphoto'],
+                    where: {
+                        email: {
+                            [Op.like]: `%${value}%`
+                        },
+                    },
+                    include: {
+                        model: Wallet,
+                        attributes: ['publickey'],
+                    }
+                }
+            ],
+            offset,
+            limit
+        })
+            .then(friends => {
+                res.send(friends);
+            })
+            .catch(err => {
+                console.error(err)
+                res.status(400).send({ error: 'Ocorreu um erro ao localizar seus contatos pareados.' })
+            })
+    } catch (err) {
+        console.error(err)
+        res.status(400).send({ error: 'Ocorreu um erro ao localizar seus contatos pareados.' })
+    }
+
+}
+
 module.exports = {
     findOrganizationByName,
     findOrganizationByAddress,
     findOrganizationByPublicKey,
-    findSharedOrganizations
+    findSharedOrganizations,
+    findSharedOrganizationsByEmail,
+    findSharedOrganizationsByName
 }

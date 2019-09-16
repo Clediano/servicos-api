@@ -18,7 +18,9 @@ const {
     findOrganizationByAddress,
     findOrganizationByName,
     findOrganizationByPublicKey,
-    findSharedOrganizations } = require('../../repository/organization/search');
+    findSharedOrganizations,
+    findSharedOrganizationsByEmail,
+    findSharedOrganizationsByName } = require('../../repository/organization/search');
 
 const {
     createWallet,
@@ -122,10 +124,29 @@ router.get('/:id/countNumberOfNotifications', (req, res) => {
 });
 
 /**
- * @param id: id of organization
+ * @param offset: value of filter
+ * @param limit: value of filter
  */
 router.get('/:id/findSharedOrganizations/:offset/:limit', (req, res) => {
     findSharedOrganizations(req, res);
+});
+
+/**
+ * @param value: value of filter
+ * @param offset: value of filter
+ * @param limit: value of filter
+ */
+router.get('/:id/findSharedOrganizationsByEmail/:value/:offset/:limit', (req, res) => {
+    findSharedOrganizationsByEmail(req, res);
+});
+
+/**
+ * @param value: value of filter
+ * @param offset: value of filter
+ * @param limit: value of filter
+ */
+router.get('/:id/findSharedOrganizationsByName/:value/:offset/:limit', (req, res) => {
+    findSharedOrganizationsByName(req, res);
 });
 
 module.exports = app => app.use('/organization', router);
