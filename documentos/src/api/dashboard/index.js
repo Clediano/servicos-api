@@ -13,6 +13,9 @@ const {
 const {
     countNumberTotalOfDocuments
 } = require('../../repository/dashboard/totalDocuments');
+const {
+    documentsByPeriod
+} = require('../../repository/dashboard/documentsByPeriod');
 
 /**
  * @param organizationId: uuid
@@ -40,6 +43,13 @@ router.get('/count_number_of_friends/:organizationid', async (req, res) => {
  */
 router.get('/count_number_total_of_documents/:organizationid', async (req, res) => {
     countNumberTotalOfDocuments(req, res);
+});
+
+/**
+ * @param organizationId: uuid
+ */
+router.get('/get_documents_by_period/:organizationid', async (req, res) => {
+    documentsByPeriod(req, res);
 });
 
 module.exports = app => app.use('/dashboard', router);
