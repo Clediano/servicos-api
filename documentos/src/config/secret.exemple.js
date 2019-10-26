@@ -14,9 +14,5 @@ module.exports = {
     MAIL_PORT: '',
     BLOCKCYPHER_TOKEN: '',
     BLOCKCYPHER_API_URL: '',
-    WALLET_PRIVATE_KEY: '',
-    WALLET_PUBLIC_KEY: '',
-    WALLET_WIF: '',
-    WALLET_ADDRESS: '',
     TOTAL_FREE_SATOSHI: 0
 }

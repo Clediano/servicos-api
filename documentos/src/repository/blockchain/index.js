@@ -1,15 +1,20 @@
 const { anchor } = require('../../config/anchor');
 const axios = require('axios').default;
-const { WALLET_WIF, TOTAL_FREE_SATOSHI, BLOCKCYPHER_API_URL } = require('../../config/secret');
 
-async function createRawTransaction(hash) {
+const Wallet = require('../../database/models').wallet;
+
+const { TOTAL_FREE_SATOSHI, BLOCKCYPHER_API_URL } = require('../../config/secret');
+
+async function createRawTransaction(hash, organizationId) {
 
     let hexData = new Buffer.from(hash).toString('hex');
     let result;
 
+    const wallet = await Wallet.findOne({ where: { organizationid: organizationId } })
+
     try {
 
-        const data = await anchor.btcOpReturnAsync(WALLET_WIF, hexData, TOTAL_FREE_SATOSHI)
+        const data = await anchor.btcOpReturnAsync(wallet.wif, hexData, TOTAL_FREE_SATOSHI)
 
         result = {
             txId: data.txId,
@@ -18,26 +23,6 @@ async function createRawTransaction(hash) {
     } catch (error) {
         result = {
             txId: null,
-            error: error.message
-        };
-    }
-    return result;
-}
-
-async function splitOutput(maxOutputs) {
-
-    let result;
-
-    try {
-        const splitResult = await anchor.btcSplitOutputsAsync(WALLET_PRIVATE_KEY, maxOutputs, TOTAL_FREE_SATOSHI);
-
-        result = {
-            splitResult,
-            error: null
-        };
-    } catch (error) {
-        result = {
-            splitResult: null,
             error: error.message
         };
     }
@@ -127,7 +112,6 @@ module.exports = {
     confirmRawTransaction,
     statisticOfTransaction,
     countOfConfirmation,
-    splitOutput,
     createRawTransaction,
     getAllTransactions
 }

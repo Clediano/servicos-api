@@ -21,7 +21,7 @@ module.exports = {
         }
       },
       password: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(512),
         allowNull: false,
       },
       oidphoto: {

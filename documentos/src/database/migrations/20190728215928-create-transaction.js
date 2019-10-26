@@ -8,16 +8,16 @@ module.exports = {
         type: Sequelize.UUID
       },
       transaction: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(1000)
       },
       height: {
         type: Sequelize.INTEGER
       },
       hash: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(1000)
       },
       opreturn: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(1000)
       },
       confirmations: {
         type: Sequelize.INTEGER

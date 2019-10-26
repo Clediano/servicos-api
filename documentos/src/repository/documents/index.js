@@ -7,10 +7,9 @@ const fs = require('fs');
 
 const { getAllTransactions, statisticOfTransaction, createRawTransaction } = require('../blockchain');
 const { filterTransactionByHash, findTransactionByHash } = require('./functions');
-const { WALLET_ADDRESS } = require('../../config/secret');
 
-async function verifyExistTransaction(hash) {
-    const { list, error } = await getAllTransactions(WALLET_ADDRESS);
+async function verifyExistTransaction(hash, walletAddress) {
+    const { list, error } = await getAllTransactions(walletAddress);
 
     if (error) return { error: 'Não foi possível buscar as transações da carteira.' }
 
@@ -22,8 +21,8 @@ async function verifyExistTransaction(hash) {
     return null;
 }
 
-async function getExistTransaction(hash) {
-    const { list, error } = await getAllTransactions(WALLET_ADDRESS);
+async function getExistTransaction(hash, walletAddress) {
+    const { list, error } = await getAllTransactions(walletAddress);
 
     if (error) return { error: 'Não foi possível buscar as transações da carteira.' }
 
@@ -128,7 +127,7 @@ async function createDataRegisterWithImage(req, res) {
             res.send(exist);
         }
 
-        const { txId, errorCreate } = await createRawTransaction(data.hash, req, res);
+        const { txId, errorCreate } = await createRawTransaction(data.hash, req.body.organization);
 
         if (errorCreate) {
             deleteImage(data._id);

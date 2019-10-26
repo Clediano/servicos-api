@@ -22,11 +22,11 @@ const {
  * @param hash: file hash
  */
 router.post('/create_with_hash', async (req, res) => {
-    const { hash } = req.body;
+    const { hash, organization } = req.body;
 
     if (await verifyExistTransaction(hash) === null) {
 
-        const { txId, error } = await createRawTransaction(hash, req, res);
+        const { txId, error } = await createRawTransaction(hash, organization);
 
         if (error) res.status(400).send({ error });
 
