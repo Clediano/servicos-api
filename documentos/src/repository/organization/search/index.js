@@ -72,7 +72,12 @@ async function findOrganizationByAddress(req, res) {
                 limit
             });
 
-        return res.send({ organizations });
+        return res.send({
+            organizations: {
+                count: organizations.count,
+                rows: organizations.rows.map(el => el.organization)
+            }
+        });
 
     } catch (err) {
         console.error(err)
@@ -112,7 +117,12 @@ async function findOrganizationByPublicKey(req, res) {
                 limit
             });
 
-        return res.send({ organizations });
+        return res.send({
+            organizations: {
+                count: organizations.count,
+                rows: organizations.rows.map(el => el.organization)
+            }
+        });
 
     } catch (err) {
         console.error(err)
