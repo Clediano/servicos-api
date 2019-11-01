@@ -124,7 +124,7 @@ async function createDataRegisterWithImage(req, res) {
 
         if (exist) {
             deleteImage(data._id);
-            res.send(exist);
+            return res.send(exist);
         }
 
         const { txId, errorCreate } = await createRawTransaction(data.hash, req.body.organization);

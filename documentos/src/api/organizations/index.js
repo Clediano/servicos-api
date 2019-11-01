@@ -28,7 +28,7 @@ const {
     getWalletInformation } = require('../../repository/organization/wallet');
 
 /**
- * @param organizationId: file hash
+ * @param organizationid: file hash
  */
 router.get('/:id/wallet_information', (req, res) => {
     getWalletInformation(req, res);

@@ -18,35 +18,35 @@ const {
 } = require('../../repository/dashboard/documentsByPeriod');
 
 /**
- * @param organizationId: uuid
+ * @param organizationid: uuid
  */
 router.get('/count_number_of_documents_not_registred/:organizationid', async (req, res) => {
     countNumberOfDocumentsNotRegistred(req, res);
 });
 
 /**
- * @param organizationId: uuid
+ * @param organizationid: uuid
  */
 router.get('/count_number_of_documents_registred/:organizationid', async (req, res) => {
     countNumberOfDocumentsRegistred(req, res);
 });
 
 /**
- * @param organizationId: uuid
+ * @param organizationid: uuid
  */
 router.get('/count_number_of_friends/:organizationid', async (req, res) => {
     countNumberOfFriends(req, res);
 });
 
 /**
- * @param organizationId: uuid
+ * @param organizationid: uuid
  */
 router.get('/count_number_total_of_documents/:organizationid', async (req, res) => {
     countNumberTotalOfDocuments(req, res);
 });
 
 /**
- * @param organizationId: uuid
+ * @param organizationid: uuid
  */
 router.get('/get_documents_by_period/:organizationid', async (req, res) => {
     documentsByPeriod(req, res);

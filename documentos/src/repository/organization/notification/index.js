@@ -2,11 +2,11 @@ const Friends = require('../../../database/models').friend;
 const Organization = require('../../../database/models').organization;
 
 async function searchAllNotificationByOrganization(req, res) {
-    const organizationId = req.params.id;
+    const organizationid = req.params.id;
 
     const solicitations = await Friends.findAll({
         where: {
-            invitedid: organizationId,
+            invitedid: organizationid,
             match: false
         },
         attributes: {
@@ -70,11 +70,11 @@ async function rejectSolicitaion(req, res) {
 }
 
 async function countNumberOfNotifications(req, res) {
-    const organizationId = req.params.id;
+    const organizationid = req.params.id;
 
     const friends = await Friends.findAndCountAll({
         where: {
-            invitedid: organizationId,
+            invitedid: organizationid,
             match: false
         },
     });

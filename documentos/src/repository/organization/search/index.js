@@ -12,8 +12,8 @@ async function findOrganizationByName(req, res) {
     const value = req.params.value;
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
-    const organizationId = req.params.id;
-    var organizationsWithInvite = await findElementsWithInvite(organizationId);
+    const organizationid = req.params.id;
+    var organizationsWithInvite = await findElementsWithInvite(organizationid);
 
     try {
 
@@ -24,7 +24,7 @@ async function findOrganizationByName(req, res) {
                         [Op.like]: `%${value}%`
                     },
                     id: {
-                        [Op.notIn]: [organizationId, ...organizationsWithInvite]
+                        [Op.notIn]: [organizationid, ...organizationsWithInvite]
                     }
                 },
                 attributes: ['name', 'email', 'id', 'oidphoto'],
@@ -45,8 +45,8 @@ async function findOrganizationByAddress(req, res) {
     const value = req.params.value;
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
-    const organizationId = req.params.id;
-    var organizationsWithInvite = await findElementsWithInvite(organizationId);
+    const organizationid = req.params.id;
+    var organizationsWithInvite = await findElementsWithInvite(organizationid);
 
     try {
 
@@ -57,7 +57,7 @@ async function findOrganizationByAddress(req, res) {
                         [Op.like]: `%${value}%`
                     },
                     organizationid: {
-                        [Op.not]: [organizationId, ...organizationsWithInvite]
+                        [Op.not]: [organizationid, ...organizationsWithInvite]
                     },
 
                 },
@@ -90,8 +90,8 @@ async function findOrganizationByPublicKey(req, res) {
     const value = req.params.value;
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
-    const organizationId = req.params.id;
-    var organizationsWithInvite = await findElementsWithInvite(organizationId);
+    const organizationid = req.params.id;
+    var organizationsWithInvite = await findElementsWithInvite(organizationid);
 
     try {
 
@@ -102,7 +102,7 @@ async function findOrganizationByPublicKey(req, res) {
                         [Op.like]: `%${value}%`
                     },
                     organizationid: {
-                        [Op.not]: [organizationId, ...organizationsWithInvite]
+                        [Op.not]: [organizationid, ...organizationsWithInvite]
                     },
 
                 },
@@ -132,7 +132,7 @@ async function findOrganizationByPublicKey(req, res) {
 
 async function findSharedOrganizations(req, res) {
 
-    const organizationId = req.params.id;
+    const organizationid = req.params.id;
 
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
@@ -140,7 +140,7 @@ async function findSharedOrganizations(req, res) {
     try {
         Friend.findAll({
             where: {
-                interestedid: organizationId
+                interestedid: organizationid
             },
             attributes: {
                 exclude: ['invitedid', 'interestedid', 'updatedAt', 'createdAt'],
@@ -175,7 +175,7 @@ async function findSharedOrganizations(req, res) {
 
 async function findSharedOrganizationsByName(req, res) {
 
-    const organizationId = req.params.id;
+    const organizationid = req.params.id;
 
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
@@ -184,7 +184,7 @@ async function findSharedOrganizationsByName(req, res) {
     try {
         Friend.findAll({
             where: {
-                interestedid: organizationId,
+                interestedid: organizationid,
             },
 
             attributes: {
@@ -225,7 +225,7 @@ async function findSharedOrganizationsByName(req, res) {
 
 async function findSharedOrganizationsByEmail(req, res) {
 
-    const organizationId = req.params.id;
+    const organizationid = req.params.id;
 
     const offset = (req.params.offset || 1) * 4;
     const limit = (req.params.limit || 4);
@@ -234,7 +234,7 @@ async function findSharedOrganizationsByEmail(req, res) {
     try {
         Friend.findAll({
             where: {
-                interestedid: organizationId,
+                interestedid: organizationid,
             },
             attributes: {
                 exclude: ['invitedid', 'interestedid', 'updatedAt', 'createdAt'],

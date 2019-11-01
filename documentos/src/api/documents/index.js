@@ -68,7 +68,7 @@ router.get('/statistic/:transactionId', async (req, res) => {
 });
 
 /**
- * @param organizationId
+ * @param organizationid
  */
 router.get('/find_transactions/:id/:offset/:limit', async (req, res) => {
     findTransactionsByOrganization(req, res);

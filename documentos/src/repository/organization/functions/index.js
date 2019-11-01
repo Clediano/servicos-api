@@ -1,9 +1,9 @@
 const Organization = require('../../../database/models').organization;
 const Friend = require('../../../database/models').friend;
 
-async function verifyExistOrganization(organizationId) {
+async function verifyExistOrganization(organizationid) {
     try {
-        const organization = await Organization.findOne({ where: { id: organizationId } })
+        const organization = await Organization.findOne({ where: { id: organizationid } })
 
         if (organization) {
             return true;
@@ -14,20 +14,20 @@ async function verifyExistOrganization(organizationId) {
     }
 }
 
-async function findOrganizationById(organizationId) {
-    return await Organization.findOne({ where: { id: organizationId } })
+async function findOrganizationById(organizationid) {
+    return await Organization.findOne({ where: { id: organizationid } })
 }
 
-async function findElementsWithInvite(organizationId) {
+async function findElementsWithInvite(organizationid) {
     let organizationInvited = [];
 
-    const dataValues = await Friend.findAll({ where: { interestedid: organizationId }, attributes: ["invitedid"], raw: true });
+    const dataValues = await Friend.findAll({ where: { interestedid: organizationid }, attributes: ["invitedid"], raw: true });
 
     organizationInvited = dataValues.map(obj => {
         return obj['invitedid'];
     });
 
-    organizationInvited.push(organizationId);
+    organizationInvited.push(organizationid);
 
     return organizationInvited;
 }

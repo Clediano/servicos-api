@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false
       },
       privatekey: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(512),
         allowNull: false
       },
       wif: {

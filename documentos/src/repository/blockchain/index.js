@@ -5,16 +5,16 @@ const Wallet = require('../../database/models').wallet;
 
 const { TOTAL_FREE_SATOSHI, BLOCKCYPHER_API_URL } = require('../../config/secret');
 
-async function createRawTransaction(hash, organizationId) {
+async function createRawTransaction(hash, organizationid) {
 
     let hexData = new Buffer.from(hash).toString('hex');
     let result;
 
-    const wallet = await Wallet.findOne({ where: { organizationid: organizationId } })
+    const wallet = await Wallet.findOne({ where: { organizationid: organizationid } })
 
     try {
 
-        const data = await anchor.btcOpReturnAsync(wallet.wif, hexData, TOTAL_FREE_SATOSHI)
+        const data = await anchor.btcOpReturnAsync(wallet.dataValues.wif, hexData, TOTAL_FREE_SATOSHI)
 
         result = {
             txId: data.txId,

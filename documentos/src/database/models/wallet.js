@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         privatekey: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(512),
             allowNull: false
         },
         wif: {
@@ -35,7 +35,9 @@ module.exports = (sequelize, DataTypes) => {
                     wallet.id = uuid();
                     wallet.privatekey = criptografar(wallet.getDataValue('privatekey'));
                 },
-
+                beforeUpdate: async wallet => {
+                    wallet.privatekey = criptografar(wallet.getDataValue('privatekey'));
+                }
             }
         }
     );
