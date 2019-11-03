@@ -8,23 +8,31 @@ const { TOTAL_FREE_SATOSHI, BLOCKCYPHER_API_URL } = require('../../config/secret
 async function createRawTransaction(hash, organizationid) {
 
     let hexData = new Buffer.from(hash).toString('hex');
-    let result;
+    let result = null;
 
     const wallet = await Wallet.findOne({ where: { organizationid: organizationid } })
 
-    try {
-
-        const data = await anchor.btcOpReturnAsync(wallet.dataValues.wif, hexData, TOTAL_FREE_SATOSHI)
-
-        result = {
-            txId: data.txId,
-            error: null
-        };
-    } catch (error) {
+    if(!wallet) {
         result = {
             txId: null,
-            error: error.message
+            error: 'Nenhuma carteira foi configurada para esta organização!'
         };
+    }
+
+    if(!result) {
+        try {
+            const data = await anchor.btcOpReturnAsync(wallet.dataValues.wif, hexData, TOTAL_FREE_SATOSHI)
+
+            result = {
+                txId: data.txId,
+                error: null
+            };
+        } catch (error) {
+            result = {
+                txId: null,
+                error: error.message
+            };
+        }
     }
     return result;
 }

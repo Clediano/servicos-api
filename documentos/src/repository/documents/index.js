@@ -52,9 +52,9 @@ async function findTransactionsByOrganization(req, res) {
     });
 
     if (documents) {
-        res.send(documents);
+        return res.send(documents);
     }
-    res.status(400).send({ error: "Ocorreu um erro ao buscar os documentos." });
+    return res.status(400).send({ error: "Ocorreu um erro ao buscar os documentos." });
 }
 
 async function createDataRegisterWithHash(blockTransactionId, req, res) {
@@ -127,11 +127,11 @@ async function createDataRegisterWithImage(req, res) {
             return res.send(exist);
         }
 
-        const { txId, errorCreate } = await createRawTransaction(data.hash, req.body.organization);
+        const { txId, error } = await createRawTransaction(data.hash, req.body.organization);
 
-        if (errorCreate) {
+        if (error) {
             deleteImage(data._id);
-            return res.status(400).json({ error: 'Erro ao salvar arquivo no banco de dados.' })
+            return res.status(400).json({ error })
         }
 
         const document = await Document.create({
