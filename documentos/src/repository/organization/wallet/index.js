@@ -53,7 +53,12 @@ async function createWallet(req, res) {
             }
         });
 
-        res.status(201).send({wallet});
+        return res.status(201).send({
+            wallet: {
+                ...wallet.dataValues,
+                privatekey: criptografar(wallet.dataValues.privatekey)
+            }
+        });
 
     } catch (err) {
         console.error(err)
