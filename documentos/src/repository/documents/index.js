@@ -38,7 +38,7 @@ async function findTransactionsByOrganization(req, res) {
 
     const { id, offset, limit } = req.params;
 
-    const documents = await Transaction.findAll({
+    const documents = await Transaction.findAndCountAll({
         include: [{
             model: Document,
             attributes: ['oidarchive'],
@@ -50,7 +50,7 @@ async function findTransactionsByOrganization(req, res) {
         offset,
         limit
     });
-
+    
     if (documents) {
         return res.send(documents);
     }

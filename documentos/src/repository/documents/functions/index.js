@@ -29,7 +29,8 @@ async function saveTransactionOnly(txStats) {
 }
 
 // -> '0 */1 * * *' : “At minute 0 past every hour.”.
-cron.schedule('0 */1 * * *', async () => {
+// -> '*/10 * * * *' : “At every 10th minute.”
+cron.schedule('*/10 * * * *', async () => {
 
     const transactions = await Transaction.findAll({ where: { confirmed: false }, order: [['createdAt', 'ASC']] });
 
